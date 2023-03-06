@@ -5,8 +5,12 @@ import lombok.Getter;
 @Getter
 public enum ReportType {
 
-    SEXUAL_POSTS("성적인 내용이 포함된 게시물"),
-    SEXUAL_COMMENTS("성적인 내용이 포함된 댓글");
+    ABUSE("욕설 및 비방"),
+    SEXUALEXPRESSION("성적인 표현"),
+    PORNOGRAPHY("음란물 유포"),
+    ILLEGALADVERTISEMENT("불법적인 광고"),
+    INVASIONOFPRIVACY("개인정보 침해"),
+    OTHERTHINGS("기타");
 
     private String reason;
 
