@@ -16,8 +16,9 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Embedded
-    private Email email;
+    @Column(length = 50, unique = true, nullable = false, updatable = false, insertable = false)
+    private String email;
+
 
     @Column(nullable = false)
     private String password;
