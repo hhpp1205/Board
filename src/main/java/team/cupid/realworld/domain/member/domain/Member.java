@@ -1,4 +1,4 @@
-package team.cupid.realworld.member.model;
+package team.cupid.realworld.domain.member.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;
