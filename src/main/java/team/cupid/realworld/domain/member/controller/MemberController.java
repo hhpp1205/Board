@@ -2,16 +2,17 @@ package team.cupid.realworld.domain.member.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.cupid.realworld.domain.member.dto.MemberResponse;
 import team.cupid.realworld.domain.member.dto.MemberUpdateRequest;
 import team.cupid.realworld.domain.member.dto.SignUpRequest;
+import team.cupid.realworld.domain.member.dto.SimpleMemberResponse;
 import team.cupid.realworld.domain.member.service.MemberService;
 import team.cupid.realworld.global.security.principal.CustomUserDetails;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -20,31 +21,40 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("public/members")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void create(@Validated @RequestBody SignUpRequest request) {
-        memberService.create(request);
+    @PostMapping("/public/members")
+    public ResponseEntity<SimpleMemberResponse> create(@Validated @RequestBody SignUpRequest request) {
+        Long memberId = memberService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SimpleMemberResponse(memberId, true));
     }
 
-    @GetMapping("member/profile")
-    public MemberResponse getMember(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return memberService.findById(customUserDetails.getId());
+    @GetMapping("/members/{nickname}")
+    public ResponseEntity<MemberResponse> findByNickname(@PathVariable String nickname) {
+        return ResponseEntity.ok(memberService.findByNickname(nickname));
     }
 
-    @GetMapping("public/members")
-    public List<MemberResponse> getMembers() {
-        return memberService.findAll();
+    @PutMapping("/members")
+    public ResponseEntity<SimpleMemberResponse> update(@Validated @RequestBody MemberUpdateRequest request,
+                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long memberId = memberService.update(customUserDetails.getId(), request);
+        return ResponseEntity.ok().body(new SimpleMemberResponse(memberId, true));
     }
 
-    @PutMapping("members")
-    public void update(@Validated @RequestBody MemberUpdateRequest request,
-                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        memberService.update(customUserDetails.getId(),request);
-    }
-
-    @DeleteMapping("members")
-    public void delete(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    @DeleteMapping("/members")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         memberService.delete(customUserDetails.getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/public/member/email-check/{email}")
+    public ResponseEntity<Void> emailDuplicateCheck(@PathVariable String email) {
+        memberService.emailDuplicateCheck(email);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/public/member/nickname-check/{nickname}")
+    public ResponseEntity<Void> nicknameDuplicateCheck(@PathVariable String nickname) {
+        memberService.nicknameDuplicateCheck(nickname);
+        return ResponseEntity.ok().build();
     }
 
 }

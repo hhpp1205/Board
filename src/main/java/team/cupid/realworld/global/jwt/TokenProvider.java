@@ -65,7 +65,6 @@ public class TokenProvider implements InitializingBean {
                 .compact();
 
         String refreshToken = Jwts.builder()
-                .claim("id", memberId.toString())
                 .setExpiration(new Date(now + refreshTokenValidityInMillisecond))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();

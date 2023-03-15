@@ -9,8 +9,9 @@ import java.util.List;
 
 @Service
 public class MemberService {
-    public void create(SignUpRequest request) {
-        // TODO: 2023/03/13  
+    public Long create(SignUpRequest request) {
+        // TODO: 2023/03/13
+        return null;
     }
 
     public MemberResponse findById(Long memberId) {
@@ -23,11 +24,27 @@ public class MemberService {
         return null;
     }
 
-    public void update(Long memberId, MemberUpdateRequest request) {
+    public Long update(Long memberId, MemberUpdateRequest request) {
         // TODO: 2023/03/13
+        return null;
     }
 
     public void delete(Long memberId) {
         // TODO: 2023/03/13
+    }
+
+    public MemberResponse findByNickname(String nickname) {
+        // TODO: 2023/03/14
+        return null;
+    }
+
+    public boolean emailDuplicateCheck(String email) {
+        // TODO: 2023/03/15
+        return false;
+    }
+
+    public boolean nicknameDuplicateCheck(String nickname) {
+        // TODO: 2023/03/15
+        return false;
     }
 }
