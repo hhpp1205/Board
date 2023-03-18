@@ -5,18 +5,25 @@ import lombok.Getter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Builder
 public class SignUpRequest {
 
-    @Email(message = "올바르지 않은 email 형식입니다.")
-    @NotBlank(message = "email은 필수 값입니다.")
+    @Email
+    @NotBlank
     private String email;
 
-    @NotBlank(message = "password는 필수 값입니다.")
+    @NotBlank
     private String password;
 
-    @NotBlank(message = "nickname은 필수 값입니다.")
+    @NotBlank
     private String nickname;
+
+    @NotNull
+    private Boolean emailExists;
+
+    @NotNull
+    private Boolean nicknameExists;
 }

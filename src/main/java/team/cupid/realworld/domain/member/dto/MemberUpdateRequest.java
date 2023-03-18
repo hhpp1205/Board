@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Builder
 public class MemberUpdateRequest {
-    @NotBlank(message = "nickname은 필수 값입니다.")
+    @NotBlank
     private String nickname;
     private String bio;
     private String image;

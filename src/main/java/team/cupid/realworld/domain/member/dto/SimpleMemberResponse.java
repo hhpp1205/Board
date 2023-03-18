@@ -9,5 +9,4 @@ import lombok.Getter;
 @AllArgsConstructor
 public class SimpleMemberResponse {
     private Long memberId;
-    private boolean result;
 }

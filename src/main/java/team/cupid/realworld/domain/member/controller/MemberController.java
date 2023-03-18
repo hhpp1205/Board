@@ -24,7 +24,7 @@ public class MemberController {
     @PostMapping("/public/members")
     public ResponseEntity<SimpleMemberResponse> create(@Validated @RequestBody SignUpRequest request) {
         Long memberId = memberService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new SimpleMemberResponse(memberId, true));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new SimpleMemberResponse(memberId));
     }
 
     @GetMapping("/members/{nickname}")
@@ -36,7 +36,7 @@ public class MemberController {
     public ResponseEntity<SimpleMemberResponse> update(@Validated @RequestBody MemberUpdateRequest request,
                                        @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         Long memberId = memberService.update(customUserDetails.getId(), request);
-        return ResponseEntity.ok().body(new SimpleMemberResponse(memberId, true));
+        return ResponseEntity.ok().body(new SimpleMemberResponse(memberId));
     }
 
     @DeleteMapping("/members")
@@ -45,14 +45,14 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/public/member/email-check/{email}")
-    public ResponseEntity<Void> emailDuplicateCheck(@PathVariable String email) {
+    @PostMapping("/public/member/email-confirmation")
+    public ResponseEntity<Void> emailDuplicateCheck(@RequestBody String email) {
         memberService.emailDuplicateCheck(email);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/public/member/nickname-check/{nickname}")
-    public ResponseEntity<Void> nicknameDuplicateCheck(@PathVariable String nickname) {
+    @PostMapping("/public/member/nickname-confirmation")
+    public ResponseEntity<Void> nicknameDuplicateCheck(@RequestBody String nickname) {
         memberService.nicknameDuplicateCheck(nickname);
         return ResponseEntity.ok().build();
     }

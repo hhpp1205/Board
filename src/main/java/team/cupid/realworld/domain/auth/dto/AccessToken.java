@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class AccessToken {
 
-    @NotBlank(message = "accessToken은 필수 값입니다.")
+    @NotBlank
     private String accessToken;
 
 }
