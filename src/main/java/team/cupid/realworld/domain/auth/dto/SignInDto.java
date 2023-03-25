@@ -1,13 +1,14 @@
 package team.cupid.realworld.domain.auth.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
-@Builder
+@Setter(AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class SignInDto {
     @Email
     @NotBlank
@@ -15,4 +16,5 @@ public class SignInDto {
 
     @NotBlank
     private String password;
+
 }

@@ -1,14 +1,16 @@
 package team.cupid.realworld.domain.member.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team.cupid.realworld.domain.member.dto.MemberUpdateRequest;
 
 import javax.persistence.*;
 import java.util.Objects;
 
-@Getter
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
@@ -16,7 +18,7 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long memberId;
 
-    @Column(length = 50, unique = true, nullable = false, updatable = false, insertable = false)
+    @Column(length = 50, unique = true, nullable = false, updatable = false)
     private String email;
 
 
@@ -36,6 +38,17 @@ public class Member {
 
     private String image;
 
+    @Builder
+    public Member(Long memberId, String email, String password, String nickname, RoleType roleType, String bio, String image) {
+        this.memberId = memberId;
+        this.email = email;
+        this.password = password;
+        this.nickname = nickname;
+        this.roleType = roleType;
+        this.bio = bio;
+        this.image = image;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,5 +62,11 @@ public class Member {
     @Override
     public int hashCode() {
         return memberId != null ? memberId.hashCode() : 0;
+    }
+
+    public void update(Member request) {
+        this.nickname = request.getNickname();
+        this.bio = request.getBio();
+        this.image = request.getImage();
     }
 }
