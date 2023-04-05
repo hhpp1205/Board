@@ -19,11 +19,12 @@ import team.cupid.realworld.global.security.principal.CustomUserDetails;
 @RequiredArgsConstructor
 public class MemberController {
 
+
     private final MemberService memberService;
 
     @PostMapping("/public/members")
     public ResponseEntity<SimpleMemberResponse> create(@Validated @RequestBody SignUpRequest request) {
-        Long memberId = memberService.create(request);
+        Long memberId = memberService.create(request.toEntity());
         return ResponseEntity.status(HttpStatus.CREATED).body(new SimpleMemberResponse(memberId));
     }
 
@@ -34,8 +35,8 @@ public class MemberController {
 
     @PutMapping("/members")
     public ResponseEntity<SimpleMemberResponse> update(@Validated @RequestBody MemberUpdateRequest request,
-                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        Long memberId = memberService.update(customUserDetails.getId(), request);
+                                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        Long memberId = memberService.update(customUserDetails.getId(), request.toEntity());
         return ResponseEntity.ok().body(new SimpleMemberResponse(memberId));
     }
 
@@ -45,14 +46,14 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/public/member/email-confirmation")
-    public ResponseEntity<Void> emailDuplicateCheck(@RequestBody String email) {
+    @PostMapping("/public/members/email-confirmation/{email}")
+    public ResponseEntity<Void> emailDuplicateCheck(@PathVariable String email) {
         memberService.emailDuplicateCheck(email);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/public/member/nickname-confirmation")
-    public ResponseEntity<Void> nicknameDuplicateCheck(@RequestBody String nickname) {
+    @PostMapping("/public/members/nickname-confirmation/{nickname}")
+    public ResponseEntity<Void> nicknameDuplicateCheck(@PathVariable String nickname) {
         memberService.nicknameDuplicateCheck(nickname);
         return ResponseEntity.ok().build();
     }

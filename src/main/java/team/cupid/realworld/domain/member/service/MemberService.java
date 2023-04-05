@@ -1,50 +1,64 @@
 package team.cupid.realworld.domain.member.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import team.cupid.realworld.domain.member.domain.Member;
+import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.dto.MemberResponse;
 import team.cupid.realworld.domain.member.dto.MemberUpdateRequest;
 import team.cupid.realworld.domain.member.dto.SignUpRequest;
+import team.cupid.realworld.domain.member.exception.DuplicateEmailException;
+import team.cupid.realworld.domain.member.exception.DuplicateNicknameException;
+import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
+import team.cupid.realworld.global.error.exception.ErrorCode;
 
 import java.util.List;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class MemberService {
-    public Long create(SignUpRequest request) {
-        // TODO: 2023/03/13
-        return null;
+
+    private final MemberRepository memberRepository;
+
+    public Long create(Member member) {
+        emailDuplicateCheck(member.getNickname());
+        nicknameDuplicateCheck(member.getNickname());
+
+        return memberRepository.save(member).getMemberId();
     }
 
-    public MemberResponse findById(Long memberId) {
-        // TODO: 2023/03/13
-        return null;
-    }
+    public Long update(Long memberId, Member member) {
+        Member findMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
 
-    public List<MemberResponse> findAll() {
-        // TODO: 2023/03/13
-        return null;
-    }
+        if (findMember.getNickname() != member.getNickname()) {
+            nicknameDuplicateCheck(member.getNickname());
+        }
 
-    public Long update(Long memberId, MemberUpdateRequest request) {
-        // TODO: 2023/03/13
-        return null;
+        findMember.update(member);
+        return findMember.getMemberId();
     }
 
     public void delete(Long memberId) {
-        // TODO: 2023/03/13
+        memberRepository.deleteById(memberId);
     }
 
     public MemberResponse findByNickname(String nickname) {
-        // TODO: 2023/03/14
-        return null;
+        return MemberResponse.of(memberRepository.findByNickname(nickname)
+                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다.")));
     }
 
-    public boolean emailDuplicateCheck(String email) {
-        // TODO: 2023/03/15
-        return false;
+    public void emailDuplicateCheck(String email) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException();
+        }
     }
 
-    public boolean nicknameDuplicateCheck(String nickname) {
-        // TODO: 2023/03/15
-        return false;
+    public void nicknameDuplicateCheck(String nickname) {
+        if (memberRepository.existsByNickname(nickname)) {
+            throw new DuplicateNicknameException();
+        }
     }
 }
