@@ -1,6 +1,6 @@
-package team.cupid.realworld.domain.board.tag;
+package team.cupid.realworld.domain.board.domain.tag;
 
-import team.cupid.realworld.domain.board.Board;
+import team.cupid.realworld.domain.board.domain.Board;
 
 import javax.persistence.*;
 
@@ -15,6 +15,6 @@ public class Tag {
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @Column(name = "board_id")
+    @JoinColumn(name = "board_id")
     private Board board;
 }
