@@ -32,7 +32,7 @@ public class Board extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "board_status")
-    @Builder.Default
+//    @Builder.Default
     private BoardStatus boardStatus = BoardStatus.TEMPORARY;
 
     @Builder//
