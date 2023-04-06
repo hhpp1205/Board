@@ -6,14 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.dto.MemberResponse;
-import team.cupid.realworld.domain.member.dto.MemberUpdateRequest;
-import team.cupid.realworld.domain.member.dto.SignUpRequest;
 import team.cupid.realworld.domain.member.exception.DuplicateEmailException;
 import team.cupid.realworld.domain.member.exception.DuplicateNicknameException;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
-import team.cupid.realworld.global.error.exception.ErrorCode;
 
-import java.util.List;
 
 @Service
 @Transactional
