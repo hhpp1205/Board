@@ -1,6 +1,6 @@
-package team.cupid.realworld.domain.board.tag;
+package team.cupid.realworld.domain.board.domain.tag;
 
-import team.cupid.realworld.domain.board.Board;
+import team.cupid.realworld.domain.board.domain.Board;
 
 import javax.persistence.*;
 

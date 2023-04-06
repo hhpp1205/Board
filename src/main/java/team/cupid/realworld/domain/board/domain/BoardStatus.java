@@ -1,4 +1,4 @@
-package team.cupid.realworld.domain.board;
+package team.cupid.realworld.domain.board.domain;
 
 public enum BoardStatus {
 

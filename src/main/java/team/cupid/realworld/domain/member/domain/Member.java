@@ -4,9 +4,13 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team.cupid.realworld.domain.board.domain.Board;
+import team.cupid.realworld.domain.board.domain.like.Like;
 import team.cupid.realworld.domain.member.dto.MemberUpdateRequest;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -31,6 +35,12 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private RoleType roleType;
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true)
+    private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true)
+    private List<Like> likes = new ArrayList<>();
 
     //자기소개
     @Column(length = 100)
