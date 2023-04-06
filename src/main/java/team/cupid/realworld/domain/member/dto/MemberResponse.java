@@ -14,7 +14,7 @@ public class MemberResponse {
     private String nickname;
     private String bio;
     private String image;
-
+    private boolean isFollow;
     public static MemberResponse of(Member member) {
         return MemberResponse.builder()
                 .email(member.getEmail())
