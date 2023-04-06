@@ -15,6 +15,6 @@ public class Tag {
     private String name;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @Column(name = "board_id")
+    @JoinColumn(name = "board_id")
     private Board board;
 }

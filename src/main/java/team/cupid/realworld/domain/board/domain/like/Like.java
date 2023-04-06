@@ -14,10 +14,10 @@ public class Like extends BaseTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @Column(name = "board_id")
+    @JoinColumn(name = "board_id")
     private Board board;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @Column(name = "member_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 }
