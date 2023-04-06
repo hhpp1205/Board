@@ -14,12 +14,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/board")
+@RequestMapping("/api/board")
 public class BoardController {
 
     private final BoardService boardService;
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity saveBoard(
             @RequestBody @Valid final BoardSaveDto request
     ) {
@@ -32,14 +32,14 @@ public class BoardController {
         return boardService.readBoardList();
     }
 
-    @PatchMapping()
+    @PatchMapping
     public ResponseEntity<String> updateBoard(
             @RequestBody @Valid final BoardUpdateDto request
     ) {
         return boardService.updateBoard(request);
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public ResponseEntity<String> deleteReport(
             @RequestBody @Valid final BoardDeleteDto request
     ) {
