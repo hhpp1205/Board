@@ -6,7 +6,7 @@ plugins {
 
 group = 'team.cupid'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = "11"
+sourceCompatibility = '11'
 
 configurations {
     compileOnly {
@@ -71,4 +71,3 @@ tasks.named('test') {
 bootRun {
 	systemProperty "spring.profiles.active", profile
 }
-targetCompatibility = JavaVersion.VERSION_16
