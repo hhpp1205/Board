@@ -31,8 +31,8 @@ public class Board extends BaseEntity {
     private List<Tag> tags = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "board_status")
-//    @Builder.Default
+    @Column(name = "board_status")
+    @Builder.Default
     private BoardStatus boardStatus = BoardStatus.TEMPORARY;
 
     @Builder//
