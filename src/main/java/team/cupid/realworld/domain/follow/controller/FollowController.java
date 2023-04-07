@@ -36,13 +36,13 @@ public class FollowController {
     @GetMapping("/follow/following")
     public ResponseEntity<List<FollowResponse>> getFollowing(
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return followService.getFollowing(customUserDetails.getId());
+        return ResponseEntity.ok().body(followService.getFollowing(customUserDetails.getId()));
     }
 
     @GetMapping("/follow/follower")
     public ResponseEntity<List<FollowResponse>> getFollower(
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return followService.getFollower(customUserDetails.getId());
+        return ResponseEntity.ok().body(followService.getFollower(customUserDetails.getId()));
     }
 
 }

@@ -11,4 +11,5 @@ public class FollowResponse {
 
     private String nickname;
     private String image;
+    
 }

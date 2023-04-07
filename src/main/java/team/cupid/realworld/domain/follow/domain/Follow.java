@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import team.cupid.realworld.domain.member.domain.Member;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -20,10 +19,21 @@ public class Follow {
 
     @ManyToOne
     @JoinColumn(name = "following")
-    private Member following;
+    private Member fromMember;
 
     @ManyToOne
     @JoinColumn(name = "follower")
-    private Member follower;
+    private Member toMember;
+
+
+    private Follow(Member following, Member follower) {
+        this.fromMember = following;
+        this.toMember = follower;
+    }
+
+    public static Follow of(Member fromMember, Member toMember) {
+        return new Follow(fromMember, toMember);
+    }
+
 
 }
