@@ -40,9 +40,9 @@ public class FollowController {
     }
 
     @GetMapping("/follow/follower")
-    public List<FollowResponse> getFollower(
+    public ResponseEntity<List<FollowResponse>> getFollower(
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return followService.getFollower(customUserDetails.getId());
+        return ResponseEntity.ok().body(followService.getFollower(customUserDetails.getId()));
     }
 
 }
