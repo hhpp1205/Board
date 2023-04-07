@@ -12,7 +12,10 @@ public enum ErrorCode {
     // Member
     MEMBER_NOT_FOUND(400, "M001", "존재하지 않는 회원입니다."),
     DUPLICATE_EMAIL(400, "M002", "존재하는 이메일입니다."),
-    DUPLICATE_NICKNAME(400, "M003", "존재하는 닉네임입니다.");
+    DUPLICATE_NICKNAME(400, "M003", "존재하는 닉네임입니다."),
+
+    //Follow
+    DUPLICATE_FOLLOW(400, "F001", "이미 팔로우 한 사용자입니다.");
 
     private final String code;
     private final String message;

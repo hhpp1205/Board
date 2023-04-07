@@ -75,7 +75,7 @@ public class FollowService {
 
     private void exitFollow(Member fromMember, Member toMember) {
         if(followRepository.existsByFromMemberAndToMember(fromMember, toMember)){
-            throw new DuplicateFollowerError();
+            throw new DuplicateFollowerError(ErrorCode.DUPLICATE_FOLLOW);
         }
     }
 }
