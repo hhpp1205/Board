@@ -5,8 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.cupid.realworld.domain.board.domain.Board;
-import team.cupid.realworld.domain.board.domain.like.Like;
-import team.cupid.realworld.domain.member.dto.MemberUpdateRequest;
+import team.cupid.realworld.domain.board.domain.like.Good;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ public class Member {
     private List<Board> boards = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", orphanRemoval = true)
-    private List<Like> likes = new ArrayList<>();
+    private List<Good> goods = new ArrayList<>();
 
     //자기소개
     @Column(length = 100)

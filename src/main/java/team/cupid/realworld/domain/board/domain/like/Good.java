@@ -7,10 +7,10 @@ import team.cupid.realworld.global.common.BaseTimeEntity;
 import javax.persistence.*;
 
 @Entity
-public class Like extends BaseTimeEntity {
+public class Good extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "like_id")
+    @Column(name = "good_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
