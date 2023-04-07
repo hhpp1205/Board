@@ -9,6 +9,7 @@ import team.cupid.realworld.domain.member.dto.MemberResponse;
 import team.cupid.realworld.domain.member.exception.DuplicateEmailException;
 import team.cupid.realworld.domain.member.exception.DuplicateNicknameException;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
+import team.cupid.realworld.global.error.exception.ErrorCode;
 
 
 @Service
@@ -27,7 +28,7 @@ public class MemberService {
 
     public Long update(Long memberId, Member member) {
         Member findMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         if (findMember.getNickname() != member.getNickname()) {
             nicknameDuplicateCheck(member.getNickname());
@@ -43,18 +44,18 @@ public class MemberService {
 
     public MemberResponse findByNickname(String nickname) {
         return MemberResponse.of(memberRepository.findByNickname(nickname)
-                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다.")));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND)));
     }
 
     public void emailDuplicateCheck(String email) {
         if (memberRepository.existsByEmail(email)) {
-            throw new DuplicateEmailException();
+            throw new DuplicateEmailException(ErrorCode.DUPLICATE_EMAIL);
         }
     }
 
     public void nicknameDuplicateCheck(String nickname) {
         if (memberRepository.existsByNickname(nickname)) {
-            throw new DuplicateNicknameException();
+            throw new DuplicateNicknameException(ErrorCode.DUPLICATE_NICKNAME);
         }
     }
 }

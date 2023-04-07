@@ -11,6 +11,7 @@ import team.cupid.realworld.domain.follow.exception.DuplicateFollowerError;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
+import team.cupid.realworld.global.error.exception.ErrorCode;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,10 +27,10 @@ public class FollowService {
     public Long following(Long fromMemberId, Long toMemberId) {
 
         Member fromMember = memberRepository.findById(fromMemberId)
-                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Member toMember = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         exitFollow(fromMember, toMember);
 
@@ -40,10 +41,10 @@ public class FollowService {
 
     public void unFollowing(Long fromMemberId, Long toMemberId) {
         Member fromMember = memberRepository.findById(fromMemberId)
-                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Member toMember = memberRepository.findById(toMemberId)
-                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         followRepository.deleteByFromMemberAndToMember(fromMember, toMember);
     }
@@ -53,7 +54,7 @@ public class FollowService {
      */
     public List<FollowResponse> getFollowing(Long memberId) {
         Member fromMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         return followRepository.findByFromMember(fromMember).stream()
                 .map(follow -> new FollowResponse(follow.getToMember().getNickname(), follow.getToMember().getImage()))
@@ -65,7 +66,7 @@ public class FollowService {
      */
     public List<FollowResponse> getFollower(Long memberId) {
         Member toMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         return followRepository.findByToMember(toMember).stream()
                 .map(follow -> new FollowResponse(follow.getFromMember().getNickname(), follow.getFromMember().getImage()))

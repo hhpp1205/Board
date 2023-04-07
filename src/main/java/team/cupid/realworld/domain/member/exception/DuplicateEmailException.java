@@ -1,4 +1,11 @@
 package team.cupid.realworld.domain.member.exception;
 
-public class DuplicateEmailException extends RuntimeException {
+import team.cupid.realworld.global.error.exception.BusinessException;
+import team.cupid.realworld.global.error.exception.ErrorCode;
+
+public class DuplicateEmailException extends BusinessException {
+
+    public DuplicateEmailException(ErrorCode errorCode) {
+        super(errorCode);
+    }
 }
