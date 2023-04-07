@@ -32,7 +32,7 @@ public class Follow {
     }
 
     public static Follow of(Member fromMember, Member toMember) {
-        return new Follow(toMember, toMember);
+        return new Follow(fromMember, toMember);
     }
 
 

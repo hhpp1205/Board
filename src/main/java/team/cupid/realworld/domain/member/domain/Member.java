@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.cupid.realworld.domain.board.domain.Board;
 import team.cupid.realworld.domain.board.domain.like.Like;
-import team.cupid.realworld.domain.member.dto.MemberUpdateRequest;
 
 import javax.persistence.*;
 import java.util.ArrayList;
