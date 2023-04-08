@@ -1,7 +1,7 @@
 package team.cupid.realworld.domain.board.domain;
 
 import lombok.*;
-import team.cupid.realworld.domain.board.domain.like.Good;
+import team.cupid.realworld.domain.good.domain.Good;
 import team.cupid.realworld.domain.board.domain.tag.Tag;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.global.common.BaseEntity;
