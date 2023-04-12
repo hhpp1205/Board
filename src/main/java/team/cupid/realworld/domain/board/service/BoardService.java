@@ -66,13 +66,4 @@ public class BoardService {
 
     // 예외 처리
 
-    // 테스트 서비스
-    public ResponseEntity<List<TestDto>> readBoard() {
-        if (boardRepository.existsCreateTimeById(1L)) throw new RuntimeException("날짜 데이터가 존재하지 않음");
-
-        List<TestDto> list = boardRepository.findAllTestDto()
-                .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
-
-        return ResponseEntity.ok(list);
-    }
 }

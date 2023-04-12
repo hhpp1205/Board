@@ -48,12 +48,4 @@ public class BoardController {
         return boardService.deleteBoard(request);
     }
 
-    // 테스트 api
-    @GetMapping("/")
-    public ResponseEntity<List<TestDto>> readBoard(
-
-    ) {
-        return boardService.readBoard();
-    }
-
 }
