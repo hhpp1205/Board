@@ -28,7 +28,7 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Tag> tags = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", orphanRemoval = true)
@@ -39,10 +39,11 @@ public class Board extends BaseEntity {
     private BoardStatus boardStatus = BoardStatus.TEMPORARY;
 
     @Builder
-    private Board(Long id, String title, String content, List<Tag> tags, List<Good> goods, BoardStatus boardStatus) {
+    private Board(Long id, String title, String content, Member member, List<Tag> tags, List<Good> goods, BoardStatus boardStatus) {
         this.id = id;
         this.title = title;
         this.content = content;
+        this.member = member;
         this.tags = tags;
         this.goods = goods;
         this.boardStatus = boardStatus;

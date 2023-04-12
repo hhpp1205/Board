@@ -21,5 +21,6 @@ public class Good extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private boolean state;
+    @Column(name = "is_good")
+    private boolean isGood;
 }
