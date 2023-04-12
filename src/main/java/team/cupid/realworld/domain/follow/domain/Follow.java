@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.cupid.realworld.domain.member.domain.Member;
+import team.cupid.realworld.global.common.BaseEntity;
 
 import javax.persistence.*;
 
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"following", "follower"})})
-public class Follow {
+public class Follow extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,10 +26,9 @@ public class Follow {
     @JoinColumn(name = "follower")
     private Member toMember;
 
-
-    private Follow(Member following, Member follower) {
-        this.fromMember = following;
-        this.toMember = follower;
+    public Follow(Member fromMember, Member toMember) {
+        this.fromMember = fromMember;
+        this.toMember = toMember;
     }
 
     public static Follow of(Member fromMember, Member toMember) {
