@@ -26,6 +26,7 @@ public class Tag {
 
     @Builder
     public Tag(Long id, String name, Board board) {
+        this.id = id;
         this.name = name;
         this.board = board;
     }

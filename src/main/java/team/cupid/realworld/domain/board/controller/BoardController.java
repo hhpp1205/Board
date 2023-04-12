@@ -5,10 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team.cupid.realworld.domain.board.domain.BoardStatus;
-import team.cupid.realworld.domain.board.dto.BoardDeleteDto;
-import team.cupid.realworld.domain.board.dto.BoardReadDto;
-import team.cupid.realworld.domain.board.dto.BoardSaveDto;
-import team.cupid.realworld.domain.board.dto.BoardUpdateDto;
+import team.cupid.realworld.domain.board.dto.*;
 import team.cupid.realworld.domain.board.service.BoardService;
 import team.cupid.realworld.global.security.principal.CustomUserDetails;
 
@@ -49,6 +46,14 @@ public class BoardController {
             @RequestBody @Valid final BoardDeleteDto request
     ) {
         return boardService.deleteBoard(request);
+    }
+
+    // 테스트 api
+    @GetMapping("/")
+    public ResponseEntity<List<TestDto>> readBoard(
+
+    ) {
+        return boardService.readBoard();
     }
 
 }

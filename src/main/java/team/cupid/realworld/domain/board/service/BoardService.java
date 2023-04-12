@@ -10,10 +10,7 @@ import team.cupid.realworld.domain.board.domain.BoardStatus;
 import team.cupid.realworld.domain.board.domain.repository.BoardRepository;
 import team.cupid.realworld.domain.board.domain.tag.Tag;
 import team.cupid.realworld.domain.board.domain.tag.TagRepository;
-import team.cupid.realworld.domain.board.dto.BoardDeleteDto;
-import team.cupid.realworld.domain.board.dto.BoardReadDto;
-import team.cupid.realworld.domain.board.dto.BoardSaveDto;
-import team.cupid.realworld.domain.board.dto.BoardUpdateDto;
+import team.cupid.realworld.domain.board.dto.*;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
@@ -39,9 +36,7 @@ public class BoardService {
         Iterator<String> iterator = request.getTags().listIterator();
         while(iterator.hasNext()) {
             String s = iterator.next();
-
             if (s == null || s == "") continue;
-
             tagRepository.save(Tag.builder()
                             .name(s)
                             .board(board)
@@ -70,4 +65,14 @@ public class BoardService {
     }
 
     // 예외 처리
+
+    // 테스트 서비스
+    public ResponseEntity<List<TestDto>> readBoard() {
+        if (boardRepository.existsCreateTimeById(1L)) throw new RuntimeException("날짜 데이터가 존재하지 않음");
+
+        List<TestDto> list = boardRepository.findAllTestDto()
+                .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
+
+        return ResponseEntity.ok(list);
+    }
 }
