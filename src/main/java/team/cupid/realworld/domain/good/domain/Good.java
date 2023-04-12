@@ -1,4 +1,4 @@
-package team.cupid.realworld.domain.board.domain.like;
+package team.cupid.realworld.domain.good.domain;
 
 import team.cupid.realworld.domain.board.domain.Board;
 import team.cupid.realworld.domain.member.domain.Member;
@@ -20,4 +20,6 @@ public class Good extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    private boolean state;
 }

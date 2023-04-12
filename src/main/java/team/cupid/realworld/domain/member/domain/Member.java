@@ -8,6 +8,7 @@ import team.cupid.realworld.domain.board.domain.Board;
 import team.cupid.realworld.domain.board.domain.like.Good;
 import team.cupid.realworld.global.common.BaseEntity;
 
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
