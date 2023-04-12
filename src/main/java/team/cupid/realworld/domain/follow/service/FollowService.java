@@ -56,7 +56,7 @@ public class FollowService {
                 .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
 
         return followRepository.findByFromMember(fromMember).stream()
-                .map(follow -> new FollowResponse(follow.getToMember().getNickname(), follow.getToMember().getImage()))
+                .map(follow -> new FollowResponse(follow.getToMember().getNickname(), follow.getToMember().getImage(), follow.getCreatedBy(), follow.getLastModifiedBy()))
                 .collect(Collectors.toList());
     }
     
@@ -68,7 +68,11 @@ public class FollowService {
                 .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
 
         return followRepository.findByToMember(toMember).stream()
-                .map(follow -> new FollowResponse(follow.getFromMember().getNickname(), follow.getFromMember().getImage()))
+                .map(follow -> new FollowResponse(
+                        follow.getFromMember().getNickname(),
+                        follow.getFromMember().getImage(),
+                        follow.getCreatedBy(),
+                        follow.getLastModifiedBy()))
                 .collect(Collectors.toList());
     }
 
