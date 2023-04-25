@@ -13,15 +13,18 @@ public class BoardReadDto {
     private Long boardId;
     private String title;
     private String content;
+    //private List<String> tags;
     private String writer;
     private LocalDateTime createdDate;
     private Boolean isGood;
     private Long goodCount;
 
+    @Builder
     public BoardReadDto(Long boardId, String title, String content, String writer, LocalDateTime createdDate, Boolean isGood, Long goodCount) {
         this.boardId = boardId;
         this.title = title;
         this.content = content;
+        //this.tags = tags;
         this.writer = writer;
         this.createdDate = createdDate;
         this.isGood = isGood;

@@ -1,6 +1,7 @@
 package team.cupid.realworld.domain.board.dto;
 
 import lombok.Getter;
+import team.cupid.realworld.domain.board.domain.Board;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,4 +13,11 @@ public class BoardUpdateDto {
     private String title;
     @NotBlank
     private String content;
+
+    public Board toEntity() {
+        return Board.builder()
+                .title(this.title)
+                .content(this.content)
+                .build();
+    }
 }

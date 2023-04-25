@@ -15,7 +15,6 @@ public class BoardSaveDto {
     private String title;
     @NotBlank
     private String content;
-
     private List<@NotBlank String> tags;
     private BoardStatus status;
 
@@ -25,6 +24,7 @@ public class BoardSaveDto {
                 .content(content)
                 .member(member)
                 .boardStatus(status)
+                .goodCount(0L)
                 .build();
     }
 }

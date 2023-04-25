@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import team.cupid.realworld.domain.board.domain.BoardStatus;
 import team.cupid.realworld.domain.board.dto.*;
 import team.cupid.realworld.domain.board.service.BoardService;
 import team.cupid.realworld.global.security.principal.CustomUserDetails;
@@ -36,9 +35,10 @@ public class BoardController {
 
     @PatchMapping
     public ResponseEntity<String> updateBoard(
-            @RequestBody @Valid final BoardUpdateDto request
+            @RequestBody @Valid final BoardUpdateDto request,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.updateBoard(request);
+        return boardService.updateBoard(request, customUserDetails.getId());
     }
 
     @DeleteMapping
