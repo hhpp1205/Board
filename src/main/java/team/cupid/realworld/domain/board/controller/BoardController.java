@@ -43,9 +43,10 @@ public class BoardController {
 
     @DeleteMapping
     public ResponseEntity<String> deleteReport(
-            @RequestBody @Valid final BoardDeleteDto request
+            @RequestBody @Valid final BoardDeleteDto request,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.deleteBoard(request);
+        return boardService.deleteBoard(request, customUserDetails.getId());
     }
 
 }

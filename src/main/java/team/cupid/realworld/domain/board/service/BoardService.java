@@ -64,6 +64,11 @@ public class BoardService {
         Board board = boardRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
 
+        /**
+         * 게시글 작성자와 현재 로그인한 사용자가 같지 않을 때 예외처리
+         */
+
+
         List<Tag> tagList = new ArrayList<>();
         Iterator<String> nameList = request.getTags().listIterator();
         while(nameList.hasNext()) {
@@ -126,9 +131,17 @@ public class BoardService {
         return ResponseEntity.status(HttpStatus.OK).body("게시글 업데이트 성공");
     }
 
-    public ResponseEntity<String> deleteBoard(BoardDeleteDto request) {
+    public ResponseEntity<String> deleteBoard(BoardDeleteDto request, Long memberId) {
+        Board board = boardRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
 
-        return null;
+        /**
+         * 게시글 작성자와 현재 로그인한 사용자가 같지 않을 때 예외처리
+         */
+
+        boardRepository.delete(board);
+
+        return ResponseEntity.status(HttpStatus.OK).body("게시글 삭제 성공");
     }
 
     // 메서드
