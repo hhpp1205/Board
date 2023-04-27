@@ -21,6 +21,7 @@ import team.cupid.realworld.global.security.principal.CustomUserDetails;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -38,25 +39,13 @@ public class BoardService {
 
         Board board = boardRepository.save(request.toEntity(member));
 
-        Iterator<String> iterator = request.getTags().listIterator();
-        while(iterator.hasNext()) {
-            String s = iterator.next();
+        Iterator<String> nameIterator = request.getTags().listIterator();
 
-            Tag tag;
-            if (tagRepository.existsByName(s)) {
-                tag = tagRepository.findByName(s)
-                        .orElseThrow(() -> new RuntimeException("tag가 존재하지 않습니다"));
-            } else {
-                tag = tagRepository.save(
-                        Tag.builder()
-                                .name(s)
-                                .build());
-            }
-
+        while(nameIterator.hasNext()) {
             boardTagRepository.save(
                     BoardTag.builder()
                             .board(board)
-                            .tag(tag)
+                            .tag(getTag(nameIterator.next()))
                             .build());
         }
 
@@ -72,21 +61,92 @@ public class BoardService {
     }
 
     public ResponseEntity<String> updateBoard(BoardUpdateDto request, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException("Member가 존재하지 않습니다."));
+        Board board = boardRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
 
-        /**
-         * memberId와 작성자 Id가 일치하는지 확인하는 예외처리 추가 예정
-         */
+        List<Tag> tagList = new ArrayList<>();
+        Iterator<String> nameList = request.getTags().listIterator();
+        while(nameList.hasNext()) {
+            tagList.add(getTag(nameList.next()));
+        }
 
+        List<BoardTag> boardTagList = boardTagRepository.findAllByBoardId(request.getId())
+                .orElseThrow(() -> new RuntimeException("태그가 저장되어있지 않습니다."));
 
+        Iterator<Tag> tagIterator;
+        Iterator<BoardTag> boardTagIterator;
 
-        return null;
+        // 기존 태그에 수정 태그가 없을 때
+        tagIterator = tagList.listIterator();
+        while(tagIterator.hasNext()) {
+            Tag tag = tagIterator.next();
+
+            int cnt = 0;
+            boardTagIterator = boardTagList.listIterator();
+            while (boardTagIterator.hasNext()) {
+                BoardTag bt = boardTagIterator.next();
+
+                if (bt.getTag().equals(tag)) { // 동등성 비교 고려
+                    cnt++;
+                    break;
+                }
+
+            }
+            if (cnt == 0) {
+                boardTagRepository.save(
+                        BoardTag.builder()
+                                .board(board)
+                                .tag(tag)
+                                .build());
+            }
+        }
+
+        // 수정 태그에 기존 태그가 없을 때
+        boardTagIterator = boardTagList.listIterator();
+        while(boardTagIterator.hasNext()) {
+            BoardTag bt = boardTagIterator.next();
+
+            int cnt = 0;
+            tagIterator = tagList.listIterator();
+            while (tagIterator.hasNext()) {
+                Tag tag = tagIterator.next();
+
+                if (tag.equals(bt.getTag())) { // 동등성 비교 고려
+                    cnt++;
+                    break;
+                }
+            }
+            if (cnt == 0) {
+                boardTagRepository.delete(bt);
+            }
+        }
+
+        board.update(request.toEntity());
+
+        return ResponseEntity.status(HttpStatus.OK).body("게시글 업데이트 성공");
     }
 
     public ResponseEntity<String> deleteBoard(BoardDeleteDto request) {
 
         return null;
+    }
+
+    // 메서드
+
+    public Tag getTag(String s) {
+        Tag tag;
+
+        if (tagRepository.existsByName(s)) {
+            tag = tagRepository.findByName(s)
+                    .orElseThrow(() -> new RuntimeException("tag가 존재하지 않습니다"));
+        } else {
+            tag = tagRepository.save(
+                    Tag.builder()
+                            .name(s)
+                            .build());
+        }
+
+        return tag;
     }
 
     // 예외 처리
