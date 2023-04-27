@@ -43,15 +43,15 @@ public class BoardService {
             String s = iterator.next();
 
             Tag tag;
-            if (!tagRepository.existsByName(s)) {
+            if (tagRepository.existsByName(s)) {
+                tag = tagRepository.findByName(s)
+                        .orElseThrow(() -> new RuntimeException("tag가 존재하지 않습니다"));
+            } else {
                 tag = tagRepository.save(
                         Tag.builder()
                                 .name(s)
                                 .build());
             }
-
-            tag = tagRepository.findByName(s)
-                    .orElseThrow(() -> new RuntimeException("tag가 존재하지 않습니다"));
 
             boardTagRepository.save(
                     BoardTag.builder()
