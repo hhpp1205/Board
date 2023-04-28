@@ -1,30 +1,34 @@
 package team.cupid.realworld.domain.board.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+import team.cupid.realworld.domain.board.domain.tag.BoardTag;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class BoardReadDto {
-    private Long id;
+    private Long boardId;
     private String title;
     private String content;
-    private String name;
-    private String createdDate;
-    private Boolean whether;
-    private Integer count;
+    private List<TagDto> tags;
+    private String writer;
+    private LocalDateTime createdDate;
+    private Boolean isGood;
+    private Long goodCount;
 
     @Builder
-    public BoardReadDto(Long id, String title, String content, String name, String createdDate, Boolean whether, Integer count) {
-        this.id = id;
+    public BoardReadDto(Long boardId, String title, String content, List<TagDto> tags, String writer, LocalDateTime createdDate, Boolean isGood, Long goodCount) {
+        this.boardId = boardId;
         this.title = title;
         this.content = content;
-        this.name = name;
+        this.tags = tags;
+        this.writer = writer;
         this.createdDate = createdDate;
-        this.whether = whether;
-        this.count = count;
+        this.isGood = isGood;
+        this.goodCount = goodCount;
     }
 }

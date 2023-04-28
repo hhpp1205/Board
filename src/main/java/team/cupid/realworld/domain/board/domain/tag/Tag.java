@@ -1,10 +1,17 @@
 package team.cupid.realworld.domain.board.domain.tag;
 
-import team.cupid.realworld.domain.board.domain.Board;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Tag {
 
     @Id
@@ -12,9 +19,18 @@ public class Tag {
     @Column(name = "tag_id")
     private Long id;
 
+    @Column(unique = true)
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "board_id")
-    private Board board;
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<BoardTag> boardTags = new ArrayList<>();
+
+    @Builder
+    public Tag(Long id, String name, List<BoardTag> boardTags) {
+        this.id = id;
+        this.name = name;
+        this.boardTags = boardTags;
+    }
+
+
 }

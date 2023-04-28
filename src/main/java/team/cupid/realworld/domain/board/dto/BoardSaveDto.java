@@ -1,7 +1,10 @@
 package team.cupid.realworld.domain.board.dto;
 
 import lombok.Getter;
+import team.cupid.realworld.domain.board.domain.Board;
+import team.cupid.realworld.domain.board.domain.BoardStatus;
 import team.cupid.realworld.domain.board.domain.tag.Tag;
+import team.cupid.realworld.domain.member.domain.Member;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -12,8 +15,16 @@ public class BoardSaveDto {
     private String title;
     @NotBlank
     private String content;
-    @NotBlank
-    private List<Tag> tag;
-    @NotBlank
-    private String status;
+    private List<@NotBlank String> tags;
+    private BoardStatus status;
+
+    public Board toEntity(Member member) {
+        return Board.builder()
+                .title(title)
+                .content(content)
+                .member(member)
+                .boardStatus(status)
+                .goodCount(0L)
+                .build();
+    }
 }
