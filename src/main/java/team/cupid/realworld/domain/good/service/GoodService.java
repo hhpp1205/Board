@@ -22,7 +22,7 @@ public class GoodService{
     private final BoardRepository boardRepository;
     private final GoodRepository goodRepository;
 
-    public synchronized ResponseEntity<String> updateState(GoodStateDto request, Long memberId) {
+    public ResponseEntity<String> updateState(GoodStateDto request, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new RuntimeException("Member가 존재하지 않습니다."));
 
