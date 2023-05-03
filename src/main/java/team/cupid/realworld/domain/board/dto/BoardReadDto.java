@@ -1,9 +1,6 @@
 package team.cupid.realworld.domain.board.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-import team.cupid.realworld.domain.board.domain.tag.BoardTag;
 
 
 import java.time.LocalDateTime;
@@ -28,7 +25,7 @@ public class BoardReadDto {
         this.tags = tags;
         this.writer = writer;
         this.createdDate = createdDate;
-        this.isGood = isGood;
+        this.isGood = isGood == null ? false : isGood;
         this.goodCount = goodCount;
     }
 }

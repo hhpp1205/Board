@@ -32,7 +32,7 @@ public class Board extends BaseEntity {
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BoardTag> boardTags = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", orphanRemoval = true)
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Good> goods = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -58,4 +58,12 @@ public class Board extends BaseEntity {
         this.title = board.getTitle();
         this.content = board.getContent();
      }
+
+     public void increaseGoodCount() {
+        this.goodCount += 1;
+     }
+
+    public void decreaseGoodCount() {
+        this.goodCount -= 1;
+    }
 }

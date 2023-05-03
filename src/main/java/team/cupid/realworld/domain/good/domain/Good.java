@@ -17,12 +17,12 @@ import java.io.Serializable;
 @IdClass(GoodId.class)
 public class Good extends BaseTimeEntity{
     @Id
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
     @Id
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -33,6 +33,10 @@ public class Good extends BaseTimeEntity{
     public Good(Board board, Member member, boolean isGood) {
         this.board = board;
         this.member = member;
+        this.isGood = isGood;
+    }
+
+    public void updateGood(boolean isGood) {
         this.isGood = isGood;
     }
 }
