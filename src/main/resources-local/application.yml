@@ -6,18 +6,38 @@ spring:
 
 ---
 spring:
+  main:
+    deferred-initialization: true
+    deferred-datasource-initialization-mode: create
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      show_sql: true
+      format_sql: true
+
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/test
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    hikari:
+      maximum-pool-size: 100
+
   config:
     activate:
       on-profile: env-local
+
   redis:
     host: localhost
     port: 6879
-  jpa:
-    properties:
-      hibernate:
-        default_batch_fetch_size: 100
-        show_sql: true
-        format_sql: true
+
+
+
+
+
+
+
 
 jwt:
   header: Authorization

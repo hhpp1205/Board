@@ -26,7 +26,6 @@ public class Member extends BaseEntity {
     @Column(length = 50, unique = true, nullable = false, updatable = false)
     private String email;
 
-
     @Column(nullable = false)
     private String password;
 
@@ -49,6 +48,7 @@ public class Member extends BaseEntity {
 
     private String image;
 
+
     @Builder
     public Member(Long memberId, String email, String password, String nickname, RoleType roleType, String bio, String image) {
         this.memberId = memberId;
@@ -59,6 +59,15 @@ public class Member extends BaseEntity {
         this.bio = bio;
         this.image = image;
     }
+
+    /**
+     * 비즈니스 로직
+     */
+
+    public void setEncodePassword(String encodePassword) {
+        this.password = encodePassword;
+    }
+
 
     @Override
     public boolean equals(Object o) {

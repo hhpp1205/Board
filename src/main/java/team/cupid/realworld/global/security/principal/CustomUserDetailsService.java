@@ -14,8 +14,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
     @Override
-    public CustomUserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
-        return memberRepository.findUserDetailsById(Long.valueOf(id))
+    public CustomUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return memberRepository.findUserDetailsByEmail(email)
                 .orElseThrow(() -> new MemberNotFoundException("존재하지 않는 사용자입니다."));
     }
 

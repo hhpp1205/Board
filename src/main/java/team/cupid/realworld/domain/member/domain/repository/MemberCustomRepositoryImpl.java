@@ -23,6 +23,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository{
                 query.select(Projections.constructor(CustomUserDetails.class,
                                 member.memberId,
                                 member.email,
+                                member.password,
                                 member.roleType))
                         .from(member)
                         .where(member.email.eq(email))
@@ -35,6 +36,7 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository{
                 query.select(Projections.constructor(CustomUserDetails.class,
                                 member.memberId,
                                 member.email,
+                                member.password,
                                 member.roleType))
                         .from(member)
                         .where(member.memberId.eq(memberId))

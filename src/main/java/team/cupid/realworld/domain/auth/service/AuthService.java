@@ -1,7 +1,9 @@
 package team.cupid.realworld.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,19 +23,16 @@ import team.cupid.realworld.global.security.principal.CustomUserDetails;
 public class AuthService {
 
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder managerBuilder;
 
 
     public TokenDto login(SignInDto request) {
-        String password = passwordEncoder.encode(request.getPassword());
-
         CustomUserDetails userDetails = memberRepository.findUserDetailsByEmail(request.getEmail())
                 .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
 
         UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(userDetails, password);
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
 
         Authentication authenticate = managerBuilder.getObject().authenticate(token);
 

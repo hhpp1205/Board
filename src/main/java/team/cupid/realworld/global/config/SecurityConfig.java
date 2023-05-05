@@ -3,8 +3,6 @@ package team.cupid.realworld.global.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,7 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import team.cupid.realworld.global.jwt.TokenProvider;
 import team.cupid.realworld.global.jwt.util.JwtSecurityConfig;
-import team.cupid.realworld.global.security.CustomAuthenticationProvider;
+
 
 @Configuration
 @EnableWebSecurity
@@ -31,10 +29,10 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        return new CustomAuthenticationProvider();
-    }
+//    @Bean
+//    public AuthenticationProvider authenticationProvider() {
+//        return new CustomAuthenticationProvider();
+//    }
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -56,8 +54,9 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(PUBLIC_POINT).permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
+//                .antMatchers(PUBLIC_POINT).permitAll()
+//                .anyRequest().authenticated();
         http
                 .apply(new JwtSecurityConfig(tokenProvider));
 

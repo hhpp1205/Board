@@ -1,6 +1,7 @@
 package team.cupid.realworld.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.cupid.realworld.domain.member.domain.Member;
@@ -17,10 +18,13 @@ import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public Long create(Member member) {
         emailDuplicateCheck(member.getNickname());
         nicknameDuplicateCheck(member.getNickname());
+
+        member.setEncodePassword(passwordEncoder.encode(member.getPassword()));
 
         return memberRepository.save(member).getMemberId();
     }
