@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.cupid.realworld.domain.board.domain.Board;
-import team.cupid.realworld.domain.board.domain.like.Good;
+import team.cupid.realworld.domain.good.domain.Good;
 import team.cupid.realworld.global.common.BaseEntity;
 
 
@@ -21,6 +21,7 @@ public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_id")
     private Long memberId;
 
     @Column(length = 50, unique = true, nullable = false, updatable = false)
@@ -36,10 +37,10 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private RoleType roleType;
 
-    @OneToMany(mappedBy = "member", orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", orphanRemoval = true)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Good> goods = new ArrayList<>();
 
     //자기소개

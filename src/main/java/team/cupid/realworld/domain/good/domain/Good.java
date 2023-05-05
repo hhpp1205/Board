@@ -1,25 +1,42 @@
 package team.cupid.realworld.domain.good.domain;
 
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import team.cupid.realworld.domain.board.domain.Board;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.global.common.BaseTimeEntity;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Good extends BaseTimeEntity {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@IdClass(GoodId.class)
+public class Good extends BaseTimeEntity{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "good_id")
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @Id
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private boolean state;
+    @Column(name = "is_good")
+    private boolean isGood;
+
+    @Builder
+    public Good(Board board, Member member, boolean isGood) {
+        this.board = board;
+        this.member = member;
+        this.isGood = isGood;
+    }
+
+    public void updateGood(boolean isGood) {
+        this.isGood = isGood;
+    }
 }

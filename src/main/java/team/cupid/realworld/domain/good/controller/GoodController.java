@@ -2,12 +2,11 @@ package team.cupid.realworld.domain.good.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import team.cupid.realworld.domain.good.dto.GoodStateUpdateDto;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import team.cupid.realworld.domain.good.dto.GoodStateDto;
 import team.cupid.realworld.domain.good.service.GoodService;
+import team.cupid.realworld.global.security.principal.CustomUserDetails;
 
 import javax.validation.Valid;
 
@@ -18,10 +17,11 @@ public class GoodController {
 
     private final GoodService goodService;
 
-    @PatchMapping
+    @PostMapping
     public ResponseEntity<String> updateState(
-            @RequestBody @Valid final GoodStateUpdateDto request
-    ) {
-        return goodService.updateState(request);
+            @RequestBody @Valid final GoodStateDto request,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            ) {
+        return goodService.updateState(request, customUserDetails.getId());
     }
 }
