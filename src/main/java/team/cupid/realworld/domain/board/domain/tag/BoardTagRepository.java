@@ -13,5 +13,5 @@ public interface BoardTagRepository extends JpaRepository<BoardTag, Long> {
 
     Optional<List<BoardTag>> findAllByBoardId(Long boardId);
 
-    boolean existsByBoardAndTag(Board board, Tag tag);
+    Boolean existsByBoardAndTag(Board board, Tag tag);
 }
