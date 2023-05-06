@@ -54,20 +54,16 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
+//ext.profile = (!project.hasProperty('profile') || !profile) ? 'dev' : profile
+//
+//sourceSets {
+//	main {
+//		resources {
+//			srcDirs "src/main/resources-${profile}"
+//		}
+//	}
+//}
 
-sourceSets {
-	main {
-		resources {
-			srcDirs "src/main/resources-${profile}"
-		}
-	}
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
-}
-
-bootRun {
-	systemProperty "spring.profiles.active", profile
-}
+//bootRun {
+//	systemProperty "spring.profiles.active", profile
+//}

@@ -20,13 +20,14 @@ import javax.servlet.http.HttpServletResponse;
 public class AuthController {
 
     private final AuthService authService;
-    private final Long refreshTokenValidityInMillisecond;
+    private  Long refreshTokenValidityInMillisecond;
 
-    public AuthController(@Value("${jwt.refreshToken-validity-in-seconds}") Long refreshTokenValidityInMillisecond,
+    public AuthController(@Value("${jwt.refreshToken-validity-in-seconds}") long refreshTokenValidityInMillisecond,
                           AuthService authService) {
         this.refreshTokenValidityInMillisecond = refreshTokenValidityInMillisecond;
         this.authService = authService;
     }
+
 
     @PostMapping("public/auth")
     public ResponseEntity<AccessToken> login(@Validated @RequestBody SignInDto request) {
@@ -61,7 +62,5 @@ public class AuthController {
                 .maxAge(refreshTokenValidityInMillisecond)
                 .build();
     }
-
-
 
 }

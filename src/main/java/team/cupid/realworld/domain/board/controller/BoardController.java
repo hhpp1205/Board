@@ -38,7 +38,7 @@ public class BoardController {
             @RequestBody @Valid final BoardUpdateDto request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.updateBoard(request, customUserDetails.getId());
+        return boardService.updateBoard2(request, customUserDetails.getId());
     }
 
     @DeleteMapping
