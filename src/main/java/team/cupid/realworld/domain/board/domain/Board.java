@@ -10,6 +10,7 @@ import team.cupid.realworld.global.common.BaseEntity;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -65,5 +66,20 @@ public class Board extends BaseEntity {
 
     public void decreaseGoodCount() {
         this.goodCount -= 1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Board board = (Board) o;
+
+        return Objects.equals(id, board.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }

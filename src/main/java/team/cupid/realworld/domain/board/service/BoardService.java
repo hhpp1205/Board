@@ -8,19 +8,16 @@ import org.springframework.transaction.annotation.Transactional;
 import team.cupid.realworld.domain.board.domain.Board;
 import team.cupid.realworld.domain.board.domain.BoardStatus;
 import team.cupid.realworld.domain.board.domain.repository.BoardRepository;
-import team.cupid.realworld.domain.board.domain.tag.BoardTag;
-import team.cupid.realworld.domain.board.domain.tag.BoardTagRepository;
-import team.cupid.realworld.domain.board.domain.tag.Tag;
-import team.cupid.realworld.domain.board.domain.tag.TagRepository;
+import team.cupid.realworld.domain.board.domain.tag.*;
 import team.cupid.realworld.domain.board.dto.*;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
 import team.cupid.realworld.global.security.principal.CustomUserDetails;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import javax.persistence.EntityNotFoundException;
+import javax.validation.constraints.NotBlank;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,14 +36,15 @@ public class BoardService {
 
         Board board = boardRepository.save(request.toEntity(member));
 
-        Iterator<String> nameIterator = request.getTags().listIterator();
-
-        while(nameIterator.hasNext()) {
-            boardTagRepository.save(
-                    BoardTag.builder()
-                            .board(board)
-                            .tag(getTag(nameIterator.next()))
-                            .build());
+        for (String tagName : request.getTags()) {
+            Tag tag;
+            if (tagRepository.existsByName(tagName)) {
+                tag = tagRepository.findByName(tagName).orElseThrow(() -> new EntityNotFoundException());
+            } else {
+                tag = Tag.of(tagName);
+            }
+            tagRepository.save(tag);
+            boardTagRepository.save(BoardTag.of(board, tag));
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body("게시글 저장 성공");
@@ -123,6 +121,53 @@ public class BoardService {
             }
             if (cnt == 0) {
                 boardTagRepository.delete(bt);
+            }
+        }
+
+        board.update(request.toEntity());
+
+        return ResponseEntity.status(HttpStatus.OK).body("게시글 업데이트 성공");
+    }
+
+    public ResponseEntity<String> updateBoard2(BoardUpdateDto request, Long memberId) {
+        Board board = boardRepository.findById(request.getId())
+                .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
+
+        //기존 태그를 가져온다
+        List<Long> tagIds = board.getBoardTags().stream()
+                .map(boardTag -> boardTag.getTag().getId())
+                .collect(Collectors.toList());
+
+        List<Tag> tags = tagRepository.findAllByIdIn(tagIds);
+
+        Map<String, Boolean> tagUseCheckMap = new HashMap<>();
+        for (Tag tag : tags) {
+            tagUseCheckMap.put(tag.getName(), false);
+        }
+
+        //기존 태그와 변경 태그를 비교하며 사용하는 태그에 체크(true)한다.
+        //새로운 태그는 추가한다.
+        for (String tagName : request.getTags()) {
+            // 계속 사용되는 태그
+            if(tagUseCheckMap.get(tagName) != null) {
+                tagUseCheckMap.put(tagName, true);
+            // 새로 추가될 태그
+            } else {
+                if (!tagRepository.existsByName(tagName)) {
+                    tagRepository.save(Tag.of(tagName));
+                }
+
+                Tag tag = tagRepository.findByName(tagName).orElseThrow(() -> new EntityNotFoundException());
+
+                boardTagRepository.save(BoardTag.of(board, tag));
+            }
+        }
+
+        //기존에 있던 태그를 지울 수도 있다.
+        for (String tagName : tagUseCheckMap.keySet()) {
+            if(tagUseCheckMap.get(tagName) == false) {
+                Tag tag = tagRepository.findByName(tagName).orElseThrow(() -> new EntityNotFoundException());
+                boardTagRepository.deleteById(board.getId(), tag.getId());
             }
         }
 

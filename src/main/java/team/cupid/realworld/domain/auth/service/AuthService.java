@@ -32,7 +32,7 @@ public class AuthService {
                 .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
 
         UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+                new UsernamePasswordAuthenticationToken(userDetails, request.getPassword());
 
         Authentication authenticate = managerBuilder.getObject().authenticate(token);
 
