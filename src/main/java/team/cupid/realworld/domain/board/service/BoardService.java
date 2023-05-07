@@ -6,17 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.cupid.realworld.domain.board.domain.Board;
-import team.cupid.realworld.domain.board.domain.BoardStatus;
 import team.cupid.realworld.domain.board.domain.repository.BoardRepository;
 import team.cupid.realworld.domain.board.domain.tag.*;
 import team.cupid.realworld.domain.board.dto.*;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
-import team.cupid.realworld.global.security.principal.CustomUserDetails;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -89,7 +86,7 @@ public class BoardService {
             while (boardTagIterator.hasNext()) {
                 BoardTag bt = boardTagIterator.next();
 
-                if (bt.getTag().equals(tag)) { // 동등성 비교 고려
+                if (bt.getTag().equals(tag)) {
                     cnt++;
                     break;
                 }
@@ -114,7 +111,7 @@ public class BoardService {
             while (tagIterator.hasNext()) {
                 Tag tag = tagIterator.next();
 
-                if (tag.equals(bt.getTag())) { // 동등성 비교 고려
+                if (tag.equals(bt.getTag())) {
                     cnt++;
                     break;
                 }
@@ -176,8 +173,8 @@ public class BoardService {
         return ResponseEntity.status(HttpStatus.OK).body("게시글 업데이트 성공");
     }
 
-    public ResponseEntity<String> deleteBoard(BoardDeleteDto request, Long memberId) {
-        Board board = boardRepository.findById(request.getId())
+    public ResponseEntity<String> deleteBoard(Long boardId, Long memberId) {
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
 
         /**

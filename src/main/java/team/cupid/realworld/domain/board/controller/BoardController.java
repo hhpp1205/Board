@@ -41,12 +41,12 @@ public class BoardController {
         return boardService.updateBoard2(request, customUserDetails.getId());
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{boardId}")
     public ResponseEntity<String> deleteReport(
-            @RequestBody @Valid final BoardDeleteDto request,
+            @PathVariable Long boardId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.deleteBoard(request, customUserDetails.getId());
+        return boardService.deleteBoard(boardId, customUserDetails.getId());
     }
 
 }
