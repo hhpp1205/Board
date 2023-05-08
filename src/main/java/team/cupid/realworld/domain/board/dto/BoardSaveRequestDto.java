@@ -3,14 +3,13 @@ package team.cupid.realworld.domain.board.dto;
 import lombok.Getter;
 import team.cupid.realworld.domain.board.domain.Board;
 import team.cupid.realworld.domain.board.domain.BoardStatus;
-import team.cupid.realworld.domain.board.domain.tag.Tag;
 import team.cupid.realworld.domain.member.domain.Member;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Getter
-public class BoardSaveDto {
+public class BoardSaveRequestDto {
     @NotBlank
     private String title;
     @NotBlank

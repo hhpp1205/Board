@@ -33,7 +33,12 @@ public class GoodService{
 
             good = goodRepository.findByBoardIdAndMemberMemberId(board.getId(), member.getMemberId())
                     .orElseThrow(() -> new RuntimeException("good이 존재하지 않습니다."));
-            good.updateGood(true);
+
+            if (good.isGood()) {
+                throw new RuntimeException("이미 좋아요한 게시글이므로 [에러]");
+            }
+
+            good.setIsGoodTrue();
         } else {
 
             good = goodRepository.save(good.of(board, member));
@@ -54,7 +59,11 @@ public class GoodService{
         Good good = goodRepository.findByBoardIdAndMemberMemberId(board.getId(), member.getMemberId())
                 .orElseThrow(() -> new RuntimeException("good이 존재하지 않습니다."));
 
-        good.updateGood(false);
+        if (!good.isGood()) {
+            throw new RuntimeException("좋아요 하지 않은 게시글이므로 [에러]");
+        }
+
+        good.setIsGoodFalse();
         board.decreaseGoodCount();
 
         return ResponseEntity.status(HttpStatus.OK).body("좋아요 상태 업데이트 성공");
