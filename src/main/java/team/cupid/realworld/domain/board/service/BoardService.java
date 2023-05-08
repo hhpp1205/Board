@@ -6,17 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.cupid.realworld.domain.board.domain.Board;
-import team.cupid.realworld.domain.board.domain.BoardStatus;
 import team.cupid.realworld.domain.board.domain.repository.BoardRepository;
 import team.cupid.realworld.domain.board.domain.tag.*;
 import team.cupid.realworld.domain.board.dto.*;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
-import team.cupid.realworld.global.security.principal.CustomUserDetails;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.constraints.NotBlank;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -30,7 +27,7 @@ public class BoardService {
     private final TagRepository tagRepository;
     private final BoardTagRepository boardTagRepository;
 
-    public ResponseEntity<String> saveBoard(BoardSaveDto request, Long memberId) {
+    public Long saveBoard(BoardSaveRequestDto request, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("Member가 존재하지 않습니다."));
 
@@ -47,89 +44,18 @@ public class BoardService {
             boardTagRepository.save(BoardTag.of(board, tag));
         }
 
-        return ResponseEntity.status(HttpStatus.CREATED).body("게시글 저장 성공");
+        return board.getId();
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<BoardReadDto>> readBoardList(Long memberId) {
-        List<BoardReadDto> list = boardRepository.findAllBoardReadDto(memberId)
+    public ResponseEntity<List<BoardReadResponseDto>> readBoardList(Long memberId) {
+        List<BoardReadResponseDto> list = boardRepository.findAllBoardReadDto(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("게시글이 존재하지 않습니다."));
 
         return ResponseEntity.ok(list);
     }
 
     public ResponseEntity<String> updateBoard(BoardUpdateDto request, Long memberId) {
-        Board board = boardRepository.findById(request.getId())
-                .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
-
-        /**
-         * 게시글 작성자와 현재 로그인한 사용자가 같지 않을 때 예외처리
-         */
-
-
-        List<Tag> tagList = new ArrayList<>();
-        Iterator<String> nameList = request.getTags().listIterator();
-        while(nameList.hasNext()) {
-            tagList.add(getTag(nameList.next()));
-        }
-
-        List<BoardTag> boardTagList = boardTagRepository.findAllByBoardId(request.getId())
-                .orElseThrow(() -> new RuntimeException("태그가 저장되어있지 않습니다."));
-
-        Iterator<Tag> tagIterator;
-        Iterator<BoardTag> boardTagIterator;
-
-        // 기존 태그에 수정 태그가 없을 때
-        tagIterator = tagList.listIterator();
-        while(tagIterator.hasNext()) {
-            Tag tag = tagIterator.next();
-
-            int cnt = 0;
-            boardTagIterator = boardTagList.listIterator();
-            while (boardTagIterator.hasNext()) {
-                BoardTag bt = boardTagIterator.next();
-
-                if (bt.getTag().equals(tag)) { // 동등성 비교 고려
-                    cnt++;
-                    break;
-                }
-
-            }
-            if (cnt == 0) {
-                boardTagRepository.save(
-                        BoardTag.builder()
-                                .board(board)
-                                .tag(tag)
-                                .build());
-            }
-        }
-
-        // 수정 태그에 기존 태그가 없을 때
-        boardTagIterator = boardTagList.listIterator();
-        while(boardTagIterator.hasNext()) {
-            BoardTag bt = boardTagIterator.next();
-
-            int cnt = 0;
-            tagIterator = tagList.listIterator();
-            while (tagIterator.hasNext()) {
-                Tag tag = tagIterator.next();
-
-                if (tag.equals(bt.getTag())) { // 동등성 비교 고려
-                    cnt++;
-                    break;
-                }
-            }
-            if (cnt == 0) {
-                boardTagRepository.delete(bt);
-            }
-        }
-
-        board.update(request.toEntity());
-
-        return ResponseEntity.status(HttpStatus.OK).body("게시글 업데이트 성공");
-    }
-
-    public ResponseEntity<String> updateBoard2(BoardUpdateDto request, Long memberId) {
         Board board = boardRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
 
@@ -173,11 +99,15 @@ public class BoardService {
 
         board.update(request.toEntity());
 
+        System.out.println("수정 후 : " + boardTagRepository.findAllByBoardId(board.getId())
+                .orElseThrow(() -> new RuntimeException(""))
+                .stream().map(e -> e.getTag().getName()).collect(Collectors.toList()));
+
         return ResponseEntity.status(HttpStatus.OK).body("게시글 업데이트 성공");
     }
 
-    public ResponseEntity<String> deleteBoard(BoardDeleteDto request, Long memberId) {
-        Board board = boardRepository.findById(request.getId())
+    public ResponseEntity<Void> deleteBoard(Long boardId, Long memberId) {
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
 
         /**
@@ -186,7 +116,7 @@ public class BoardService {
 
         boardRepository.delete(board);
 
-        return ResponseEntity.status(HttpStatus.OK).body("게시글 삭제 성공");
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     // 메서드

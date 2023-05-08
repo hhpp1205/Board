@@ -36,7 +36,19 @@ public class Good extends BaseTimeEntity{
         this.isGood = isGood;
     }
 
-    public void updateGood(boolean isGood) {
-        this.isGood = isGood;
+    public static Good of(Board board, Member member) {
+        return Good.builder()
+                .board(board)
+                .member(member)
+                .isGood(true)
+                .build();
+    }
+
+    public void setIsGoodTrue() {
+        this.isGood = true;
+    }
+
+    public void setIsGoodFalse() {
+        this.isGood = false;
     }
 }

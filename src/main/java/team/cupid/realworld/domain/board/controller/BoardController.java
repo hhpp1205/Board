@@ -1,6 +1,7 @@
 package team.cupid.realworld.domain.board.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -19,15 +20,17 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping
-    public ResponseEntity<String> saveBoard(
-            @RequestBody @Valid final BoardSaveDto request,
+    public ResponseEntity<BoardSaveResponseDto> saveBoard(
+            @RequestBody @Valid final BoardSaveRequestDto request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.saveBoard(request, customUserDetails.getId());
+        Long boardId = boardService.saveBoard(request, customUserDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(BoardSaveResponseDto.of(boardId));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<BoardReadDto>> readBoardList(
+    public ResponseEntity<List<BoardReadResponseDto>> readBoardList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
         return boardService.readBoardList(customUserDetails.getId());
@@ -38,15 +41,15 @@ public class BoardController {
             @RequestBody @Valid final BoardUpdateDto request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.updateBoard2(request, customUserDetails.getId());
+        return boardService.updateBoard(request, customUserDetails.getId());
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> deleteReport(
-            @RequestBody @Valid final BoardDeleteDto request,
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<Void> deleteReport(
+            @PathVariable Long boardId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.deleteBoard(request, customUserDetails.getId());
+        return boardService.deleteBoard(boardId, customUserDetails.getId());
     }
 
 }
