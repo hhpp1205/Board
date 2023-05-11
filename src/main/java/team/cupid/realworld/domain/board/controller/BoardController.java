@@ -37,11 +37,13 @@ public class BoardController {
     }
 
     @PatchMapping
-    public ResponseEntity<String> updateBoard(
-            @RequestBody @Valid final BoardUpdateDto request,
+    public ResponseEntity<BoardUpdateResponseDto> updateBoard(
+            @RequestBody @Valid final BoardUpdateRequestDto request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.updateBoard(request, customUserDetails.getId());
+        BoardUpdateResponseDto responseDto = boardService.updateBoard(request, customUserDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @DeleteMapping("/{boardId}")

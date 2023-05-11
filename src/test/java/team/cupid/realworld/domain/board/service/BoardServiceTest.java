@@ -1,6 +1,5 @@
 package team.cupid.realworld.domain.board.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +11,12 @@ import team.cupid.realworld.domain.board.domain.tag.BoardTag;
 import team.cupid.realworld.domain.board.domain.tag.BoardTagRepository;
 import team.cupid.realworld.domain.board.domain.tag.Tag;
 import team.cupid.realworld.domain.board.domain.tag.TagRepository;
-import team.cupid.realworld.domain.board.dto.BoardUpdateDto;
+import team.cupid.realworld.domain.board.dto.BoardUpdateRequestDto;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @Transactional
 class BoardServiceTest {
@@ -51,7 +50,7 @@ class BoardServiceTest {
         BoardTag boardTag = BoardTag.of(board, tag);
         boardTagRepository.save(boardTag);
 
-        BoardUpdateDto request = BoardUpdateDto.builder()
+        BoardUpdateRequestDto request = BoardUpdateRequestDto.builder()
                 .id(1L)
                 .title("전국여행")
                 .content("Hi Hi")

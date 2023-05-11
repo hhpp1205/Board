@@ -55,7 +55,7 @@ public class BoardService {
         return ResponseEntity.ok(list);
     }
 
-    public ResponseEntity<String> updateBoard(BoardUpdateDto request, Long memberId) {
+    public BoardUpdateResponseDto updateBoard(BoardUpdateRequestDto request, Long memberId) {
         Board board = boardRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
 
@@ -99,11 +99,13 @@ public class BoardService {
 
         board.update(request.toEntity());
 
-        System.out.println("수정 후 : " + boardTagRepository.findAllByBoardId(board.getId())
+        List<String> tagList = boardTagRepository.findAllByBoardId(board.getId())
                 .orElseThrow(() -> new RuntimeException(""))
-                .stream().map(e -> e.getTag().getName()).collect(Collectors.toList()));
+                .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body("게시글 업데이트 성공");
+        BoardUpdateResponseDto responseDto = BoardUpdateResponseDto.of(board, tagList);
+
+        return responseDto;
     }
 
     public ResponseEntity<Void> deleteBoard(Long boardId, Long memberId) {
