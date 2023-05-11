@@ -24,9 +24,9 @@ public class BoardController {
             @RequestBody @Valid final BoardSaveRequestDto request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        Long boardId = boardService.saveBoard(request, customUserDetails.getId());
+        BoardSaveResponseDto responseDto = boardService.saveBoard(request, customUserDetails.getId());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(BoardSaveResponseDto.of(boardId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping("/list")

@@ -27,7 +27,7 @@ public class BoardService {
     private final TagRepository tagRepository;
     private final BoardTagRepository boardTagRepository;
 
-    public Long saveBoard(BoardSaveRequestDto request, Long memberId) {
+    public BoardSaveResponseDto saveBoard(BoardSaveRequestDto request, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("Member가 존재하지 않습니다."));
 
@@ -44,7 +44,11 @@ public class BoardService {
             boardTagRepository.save(BoardTag.of(board, tag));
         }
 
-        return board.getId();
+        List<String> tagList = boardTagRepository.findAllByBoardId(board.getId())
+                .orElseThrow(() -> new RuntimeException(""))
+                .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
+
+        return BoardSaveResponseDto.of(board, tagList);
     }
 
     @Transactional(readOnly = true)
@@ -103,9 +107,7 @@ public class BoardService {
                 .orElseThrow(() -> new RuntimeException(""))
                 .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
 
-        BoardUpdateResponseDto responseDto = BoardUpdateResponseDto.of(board, tagList);
-
-        return responseDto;
+        return BoardUpdateResponseDto.of(board, tagList);
     }
 
     public ResponseEntity<Void> deleteBoard(Long boardId, Long memberId) {
@@ -119,24 +121,6 @@ public class BoardService {
         boardRepository.delete(board);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    // 메서드
-
-    public Tag getTag(String s) {
-        Tag tag;
-
-        if (tagRepository.existsByName(s)) {
-            tag = tagRepository.findByName(s)
-                    .orElseThrow(() -> new RuntimeException("tag가 존재하지 않습니다"));
-        } else {
-            tag = tagRepository.save(
-                    Tag.builder()
-                            .name(s)
-                            .build());
-        }
-
-        return tag;
     }
 
     // 예외 처리
