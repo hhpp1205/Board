@@ -52,11 +52,17 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<BoardReadResponseDto>> readBoardList(Long memberId) {
+    public List<BoardReadResponseDto> readBoardList(Long memberId) {
         List<BoardReadResponseDto> list = boardRepository.findAllBoardReadDto(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("게시글이 존재하지 않습니다."));
 
-        return ResponseEntity.ok(list);
+        for (BoardReadResponseDto responseDto : list) {
+            responseDto.setTags(boardTagRepository.findAllByBoardId(responseDto.getBoardId())
+                    .orElseThrow(() -> new EntityNotFoundException())
+                    .stream().map(e -> e.getTag().getName()).collect(Collectors.toList()));
+        }
+
+        return list;
     }
 
     public BoardUpdateResponseDto updateBoard(BoardUpdateRequestDto request, Long memberId) {

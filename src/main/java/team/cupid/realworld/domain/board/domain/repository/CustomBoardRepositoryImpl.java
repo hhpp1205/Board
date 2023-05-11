@@ -16,12 +16,7 @@ import team.cupid.realworld.domain.member.domain.QMember;
 import java.util.List;
 import java.util.Optional;
 
-import static com.querydsl.core.group.GroupBy.groupBy;
-
-import static com.querydsl.core.types.Projections.list;
 import static team.cupid.realworld.domain.board.domain.QBoard.board;
-import static team.cupid.realworld.domain.board.domain.tag.QBoardTag.boardTag;
-import static team.cupid.realworld.domain.board.domain.tag.QTag.tag;
 import static team.cupid.realworld.domain.good.domain.QGood.good;
 import static team.cupid.realworld.domain.member.domain.QMember.member;
 
@@ -36,15 +31,12 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
         QBoard b = board;
         QMember m = member;
         QGood g = good;
-        QBoardTag bt = boardTag;
-        QTag t = tag;
 
         List<BoardReadResponseDto> list =
                 queryFactory.select(Projections.constructor(BoardReadResponseDto.class
                         , b.id.as("boardId")
                         , b.title
                         , b.content
-                        , list(Projections.constructor(TagDto.class, t.name))
                         , m.nickname.as("writer")
                         , b.createTime.as("createdDate")
                         , g.isGood
@@ -52,8 +44,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                         .from(b)
                         .join(m).on(b.member.memberId.eq(m.memberId))
                         .leftJoin(g).on(b.id.eq(g.board.id).and(g.member.memberId.eq(id)))
-                        .join(bt).on(b.id.eq(bt.board.id))
-                        .join(t).on(bt.tag.id.eq(t.id))
                         .where(b.boardStatus.eq(BoardStatus.SAVED))
                         .orderBy(b.id.desc())
                         .fetch();

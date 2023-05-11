@@ -33,7 +33,9 @@ public class BoardController {
     public ResponseEntity<List<BoardReadResponseDto>> readBoardList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.readBoardList(customUserDetails.getId());
+        List<BoardReadResponseDto> responseDtos = boardService.readBoardList(customUserDetails.getId());
+
+        return ResponseEntity.ok(responseDtos);
     }
 
     @PatchMapping

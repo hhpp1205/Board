@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import team.cupid.realworld.domain.good.service.GoodService;
 import team.cupid.realworld.global.security.principal.CustomUserDetails;
 
-import javax.validation.Valid;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/good")
@@ -20,7 +18,7 @@ public class GoodController {
     public ResponseEntity<String> like(
             @PathVariable("boardId") Long boardId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
-            ) {
+    ) {
         return goodService.like(boardId, customUserDetails.getId());
     }
 
