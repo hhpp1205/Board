@@ -24,24 +24,28 @@ public class BoardController {
             @RequestBody @Valid final BoardSaveRequestDto request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        Long boardId = boardService.saveBoard(request, customUserDetails.getId());
+        BoardSaveResponseDto responseDto = boardService.saveBoard(request, customUserDetails.getId());
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(BoardSaveResponseDto.of(boardId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping("/list")
     public ResponseEntity<List<BoardReadResponseDto>> readBoardList(
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.readBoardList(customUserDetails.getId());
+        List<BoardReadResponseDto> responseDtos = boardService.readBoardList(customUserDetails.getId());
+
+        return ResponseEntity.ok(responseDtos);
     }
 
     @PatchMapping
-    public ResponseEntity<String> updateBoard(
-            @RequestBody @Valid final BoardUpdateDto request,
+    public ResponseEntity<BoardUpdateResponseDto> updateBoard(
+            @RequestBody @Valid final BoardUpdateRequestDto request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.updateBoard(request, customUserDetails.getId());
+        BoardUpdateResponseDto responseDto = boardService.updateBoard(request, customUserDetails.getId());
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
     @DeleteMapping("/{boardId}")

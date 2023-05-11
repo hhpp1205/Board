@@ -27,7 +27,7 @@ public class BoardService {
     private final TagRepository tagRepository;
     private final BoardTagRepository boardTagRepository;
 
-    public Long saveBoard(BoardSaveRequestDto request, Long memberId) {
+    public BoardSaveResponseDto saveBoard(BoardSaveRequestDto request, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("Member가 존재하지 않습니다."));
 
@@ -44,18 +44,28 @@ public class BoardService {
             boardTagRepository.save(BoardTag.of(board, tag));
         }
 
-        return board.getId();
+        List<String> tagList = boardTagRepository.findAllByBoardId(board.getId())
+                .orElseThrow(() -> new RuntimeException(""))
+                .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
+
+        return BoardSaveResponseDto.of(board, tagList);
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<List<BoardReadResponseDto>> readBoardList(Long memberId) {
+    public List<BoardReadResponseDto> readBoardList(Long memberId) {
         List<BoardReadResponseDto> list = boardRepository.findAllBoardReadDto(memberId)
                 .orElseThrow(() -> new MemberNotFoundException("게시글이 존재하지 않습니다."));
 
-        return ResponseEntity.ok(list);
+        for (BoardReadResponseDto responseDto : list) {
+            responseDto.setTags(boardTagRepository.findAllByBoardId(responseDto.getBoardId())
+                    .orElseThrow(() -> new EntityNotFoundException())
+                    .stream().map(e -> e.getTag().getName()).collect(Collectors.toList()));
+        }
+
+        return list;
     }
 
-    public ResponseEntity<String> updateBoard(BoardUpdateDto request, Long memberId) {
+    public BoardUpdateResponseDto updateBoard(BoardUpdateRequestDto request, Long memberId) {
         Board board = boardRepository.findById(request.getId())
                 .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
 
@@ -99,11 +109,11 @@ public class BoardService {
 
         board.update(request.toEntity());
 
-        System.out.println("수정 후 : " + boardTagRepository.findAllByBoardId(board.getId())
+        List<String> tagList = boardTagRepository.findAllByBoardId(board.getId())
                 .orElseThrow(() -> new RuntimeException(""))
-                .stream().map(e -> e.getTag().getName()).collect(Collectors.toList()));
+                .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
 
-        return ResponseEntity.status(HttpStatus.OK).body("게시글 업데이트 성공");
+        return BoardUpdateResponseDto.of(board, tagList);
     }
 
     public ResponseEntity<Void> deleteBoard(Long boardId, Long memberId) {
@@ -117,24 +127,6 @@ public class BoardService {
         boardRepository.delete(board);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    // 메서드
-
-    public Tag getTag(String s) {
-        Tag tag;
-
-        if (tagRepository.existsByName(s)) {
-            tag = tagRepository.findByName(s)
-                    .orElseThrow(() -> new RuntimeException("tag가 존재하지 않습니다"));
-        } else {
-            tag = tagRepository.save(
-                    Tag.builder()
-                            .name(s)
-                            .build());
-        }
-
-        return tag;
     }
 
     // 예외 처리

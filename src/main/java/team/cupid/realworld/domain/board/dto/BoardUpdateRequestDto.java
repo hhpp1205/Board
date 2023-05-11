@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class BoardUpdateDto {
+public class BoardUpdateRequestDto {
     @NotNull
     private Long id;
     @NotBlank
@@ -21,7 +21,7 @@ public class BoardUpdateDto {
     private List<@NotBlank String> tags;
 
     @Builder
-    public BoardUpdateDto(Long id, String title, String content, List<@NotBlank String> tags) {
+    public BoardUpdateRequestDto(Long id, String title, String content, List<@NotBlank String> tags) {
         this.id = id;
         this.title = title;
         this.content = content;
