@@ -33,7 +33,7 @@ public class BoardService {
 
     public BoardSaveResponseDto saveBoard(BoardSaveRequestDto request, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberNotFoundException("Member가 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Board board = boardRepository.save(request.toEntity(member));
 

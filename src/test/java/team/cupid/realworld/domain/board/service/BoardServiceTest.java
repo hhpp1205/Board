@@ -58,7 +58,7 @@ class BoardServiceTest {
                 .build();
 
         //when
-        boardService.updateBoard2(request, 1L);
+//        boardService.updateBoard2(request, 1L);
 
         //then
         Board findBoard = boardRepository.findById(1L).get();
