@@ -13,7 +13,12 @@ public enum ErrorCode {
     BOARD_NOT_FOUND(500, "B001", "Server Error"),
     BOARD_TAG_NOT_FOUND(500, "B002", "Server Error"),
     TAG_NOT_FOUND(500, "B003", "Server Error"),
-    NO_MATCH_BOARD_WRITER(401, "B004", "Unauthorized");
+    NO_MATCH_BOARD_WRITER(401, "B004", "Unauthorized"),
+
+    // Good
+    GOOD_NOT_FOUND(500, "G001", "Server Error"),
+    ALREADY_LIKED(500, "G002", "Server Error"),
+    NOT_LIKED(500, "G002", "Server Error");
 
     private final String code;
     private final String message;
