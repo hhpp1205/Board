@@ -78,7 +78,7 @@ public class GoodService{
 
     public void isNotGood(Good good) {
 
-        if (good.isGood()) {
+        if (!good.isGood()) {
             throw new IsGoodException(ErrorCode.NOT_LIKED);
         }
     }

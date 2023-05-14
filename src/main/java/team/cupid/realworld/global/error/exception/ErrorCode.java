@@ -18,7 +18,7 @@ public enum ErrorCode {
     // Good
     GOOD_NOT_FOUND(500, "G001", "Server Error"),
     ALREADY_LIKED(500, "G002", "Server Error"),
-    NOT_LIKED(500, "G002", "Server Error");
+    NOT_LIKED(500, "G003", "Server Error");
 
     private final String code;
     private final String message;
