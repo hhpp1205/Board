@@ -10,12 +10,12 @@ import team.cupid.realworld.domain.board.domain.repository.BoardRepository;
 import team.cupid.realworld.domain.board.domain.tag.*;
 import team.cupid.realworld.domain.board.dto.*;
 import team.cupid.realworld.domain.board.exception.CustomEntityNotFoundException;
+import team.cupid.realworld.domain.board.exception.NoMatchBoardWriterException;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
 import team.cupid.realworld.global.error.exception.ErrorCode;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -71,6 +71,8 @@ public class BoardService {
         Board board = boardRepository.findById(request.getId())
                 .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
+        matchBoardWriter(board, memberId);
+
         //기존 태그를 가져온다
         List<Long> tagIds = board.getBoardTags().stream()
                 .map(boardTag -> boardTag.getTag().getId())
@@ -95,7 +97,8 @@ public class BoardService {
                     tagRepository.save(Tag.of(tagName));
                 }
 
-                Tag tag = tagRepository.findByName(tagName).orElseThrow(() -> new EntityNotFoundException());
+                Tag tag = tagRepository.findByName(tagName)
+                        .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.TAG_NOT_FOUND));
 
                 boardTagRepository.save(BoardTag.of(board, tag));
             }
@@ -104,7 +107,9 @@ public class BoardService {
         //기존에 있던 태그를 지울 수도 있다.
         for (String tagName : tagUseCheckMap.keySet()) {
             if(tagUseCheckMap.get(tagName) == false) {
-                Tag tag = tagRepository.findByName(tagName).orElseThrow(() -> new EntityNotFoundException());
+                Tag tag = tagRepository.findByName(tagName)
+                        .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.TAG_NOT_FOUND));
+
                 boardTagRepository.deleteById(board.getId(), tag.getId());
             }
         }
@@ -112,7 +117,7 @@ public class BoardService {
         board.update(request.toEntity());
 
         List<String> tagList = boardTagRepository.findAllByBoardId(board.getId())
-                .orElseThrow(() -> new RuntimeException(""))
+                .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
                 .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
 
         return BoardUpdateResponseDto.of(board, tagList);
@@ -120,16 +125,20 @@ public class BoardService {
 
     public ResponseEntity<Void> deleteBoard(Long boardId, Long memberId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new RuntimeException("게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
-        /**
-         * 게시글 작성자와 현재 로그인한 사용자가 같지 않을 때 예외처리
-         */
+        matchBoardWriter(board, memberId);
 
         boardRepository.delete(board);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    // 예외 처리
+    // exception method
+    public void matchBoardWriter(Board board, Long memberId) {
+
+        if (board.getMember().getMemberId() != memberId) {
+            throw new NoMatchBoardWriterException(ErrorCode.NO_MATCH_BOARD_WRITER);
+        }
+    }
 }
