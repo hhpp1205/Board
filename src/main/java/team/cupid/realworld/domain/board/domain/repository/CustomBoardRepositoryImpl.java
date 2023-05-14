@@ -9,7 +9,6 @@ import team.cupid.realworld.domain.board.domain.QBoard;
 import team.cupid.realworld.domain.board.domain.tag.QBoardTag;
 import team.cupid.realworld.domain.board.domain.tag.QTag;
 import team.cupid.realworld.domain.board.dto.BoardReadResponseDto;
-import team.cupid.realworld.domain.board.dto.TagDto;
 import team.cupid.realworld.domain.good.domain.QGood;
 import team.cupid.realworld.domain.member.domain.QMember;
 
