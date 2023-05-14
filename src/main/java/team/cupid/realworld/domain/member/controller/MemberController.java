@@ -34,8 +34,10 @@ public class MemberController {
     }
 
     @PutMapping("/members")
-    public ResponseEntity<SimpleMemberResponse> update(@Validated @RequestBody MemberUpdateRequest request,
-                                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<SimpleMemberResponse> update(
+            @Validated @RequestBody MemberUpdateRequest request,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
         Long memberId = memberService.update(customUserDetails.getId(), request.toEntity());
         return ResponseEntity.ok().body(new SimpleMemberResponse(memberId));
     }

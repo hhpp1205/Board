@@ -22,8 +22,10 @@ public class AuthController {
     private final AuthService authService;
     private  Long refreshTokenValidityInMillisecond;
 
-    public AuthController(@Value("${jwt.refreshToken-validity-in-seconds}") long refreshTokenValidityInMillisecond,
-                          AuthService authService) {
+    public AuthController(
+            @Value("${jwt.refreshToken-validity-in-seconds}") long refreshTokenValidityInMillisecond,
+            AuthService authService
+    ) {
         this.refreshTokenValidityInMillisecond = refreshTokenValidityInMillisecond;
         this.authService = authService;
     }
@@ -49,8 +51,10 @@ public class AuthController {
     }
 
     @PostMapping("public/auth/reissue")
-    public ResponseEntity<AccessToken> reissue(@RequestBody AccessToken accessToken,
-                                               @CookieValue(name = "refreshToken") String refreshToken) {
+    public ResponseEntity<AccessToken> reissue(
+            @RequestBody AccessToken accessToken,
+            @CookieValue(name = "refreshToken") String refreshToken
+    ) {
         return ResponseEntity.ok(authService.reissue(accessToken, refreshToken));
     }
 
