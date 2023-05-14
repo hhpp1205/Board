@@ -11,7 +11,6 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 public class BoardTagId implements Serializable {
 
     private Long board;

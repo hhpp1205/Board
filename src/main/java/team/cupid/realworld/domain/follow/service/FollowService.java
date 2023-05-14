@@ -1,6 +1,7 @@
 package team.cupid.realworld.domain.follow.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,11 +53,12 @@ public class FollowService {
     /**
      * 사용자가 팔로우 한 사람들의 정보
      */
-    public List<FollowResponse> getFollowing(Long memberId) {
+    @Transactional(readOnly = true)
+    public List<FollowResponse> getFollowing(Long memberId, Pageable pageable) {
         Member fromMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return followRepository.findByFromMember(fromMember).stream()
+        return followRepository.findByFromMember(fromMember, pageable).stream()
                 .map(follow -> new FollowResponse(follow.getToMember().getNickname(), follow.getToMember().getImage(), follow.getCreatedBy(), follow.getLastModifiedBy()))
                 .collect(Collectors.toList());
     }
@@ -64,11 +66,12 @@ public class FollowService {
     /**
      * 사용자를 팔로우 한 사람들의 정보
      */
-    public List<FollowResponse> getFollower(Long memberId) {
+    @Transactional(readOnly = true)
+    public List<FollowResponse> getFollower(Long memberId, Pageable pageable) {
         Member toMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
-        return followRepository.findByToMember(toMember).stream()
+        return followRepository.findByToMember(toMember, pageable).stream()
                 .map(follow -> new FollowResponse(
                         follow.getFromMember().getNickname(),
                         follow.getFromMember().getImage(),
