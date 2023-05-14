@@ -18,7 +18,12 @@ public enum ErrorCode {
     // Good
     GOOD_NOT_FOUND(500, "G001", "Server Error"),
     ALREADY_LIKED(500, "G002", "Server Error"),
-    NOT_LIKED(500, "G003", "Server Error");
+    NOT_LIKED(500, "G003", "Server Error"),
+
+    //Member
+    MEMBER_NOT_FOUND(500, "M001", "Member Not Found Error"),
+    EMAIL_DUPLICATE(400, "M002", "Duplicate Email Error"),
+    NICKNAME_DUPLICATE(400, "M003", "Duplicate Nickname Error");
 
     private final String code;
     private final String message;

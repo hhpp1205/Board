@@ -29,7 +29,7 @@ public class AuthService {
 
     public TokenDto login(SignInDto request) {
         CustomUserDetails userDetails = memberRepository.findUserDetailsByEmail(request.getEmail())
-                .orElseThrow(() -> new MemberNotFoundException("Member를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         UsernamePasswordAuthenticationToken token =
                 new UsernamePasswordAuthenticationToken(userDetails, request.getPassword());
