@@ -9,8 +9,10 @@ import team.cupid.realworld.domain.board.domain.Board;
 import team.cupid.realworld.domain.board.domain.repository.BoardRepository;
 import team.cupid.realworld.domain.board.domain.tag.*;
 import team.cupid.realworld.domain.board.dto.*;
-import team.cupid.realworld.domain.board.exception.CustomEntityNotFoundException;
+import team.cupid.realworld.domain.board.exception.BoardNotFoundException;
+import team.cupid.realworld.domain.board.exception.BoardTagNotFoundException;
 import team.cupid.realworld.domain.board.exception.NoMatchBoardWriterException;
+import team.cupid.realworld.domain.board.exception.TagNotFoundException;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
@@ -38,7 +40,7 @@ public class BoardService {
         for (String tagName : request.getTags()) {
             Tag tag;
             if (tagRepository.existsByName(tagName)) {
-                tag = tagRepository.findByName(tagName).orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.TAG_NOT_FOUND));
+                tag = tagRepository.findByName(tagName).orElseThrow(() -> new TagNotFoundException(ErrorCode.TAG_NOT_FOUND));
             } else {
                 tag = Tag.of(tagName);
             }
@@ -47,7 +49,7 @@ public class BoardService {
         }
 
         List<String> tagList = boardTagRepository.findAllByBoardId(board.getId())
-                .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
+                .orElseThrow(() -> new BoardTagNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
                 .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
 
         return BoardSaveResponseDto.of(board, tagList);
@@ -56,11 +58,11 @@ public class BoardService {
     @Transactional(readOnly = true)
     public List<BoardReadResponseDto> readBoardList(Long memberId) {
         List<BoardReadResponseDto> list = boardRepository.findAllBoardReadDto(memberId)
-                .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.BOARD_NOT_FOUND));
+                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
         for (BoardReadResponseDto responseDto : list) {
             responseDto.setTags(boardTagRepository.findAllByBoardId(responseDto.getBoardId())
-                    .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
+                    .orElseThrow(() -> new BoardTagNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
                     .stream().map(e -> e.getTag().getName()).collect(Collectors.toList()));
         }
 
@@ -69,7 +71,7 @@ public class BoardService {
 
     public BoardUpdateResponseDto updateBoard(BoardUpdateRequestDto request, Long memberId) {
         Board board = boardRepository.findById(request.getId())
-                .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.BOARD_NOT_FOUND));
+                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
         matchBoardWriter(board, memberId);
 
@@ -98,7 +100,7 @@ public class BoardService {
                 }
 
                 Tag tag = tagRepository.findByName(tagName)
-                        .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.TAG_NOT_FOUND));
+                        .orElseThrow(() -> new TagNotFoundException(ErrorCode.TAG_NOT_FOUND));
 
                 boardTagRepository.save(BoardTag.of(board, tag));
             }
@@ -108,7 +110,7 @@ public class BoardService {
         for (String tagName : tagUseCheckMap.keySet()) {
             if(tagUseCheckMap.get(tagName) == false) {
                 Tag tag = tagRepository.findByName(tagName)
-                        .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.TAG_NOT_FOUND));
+                        .orElseThrow(() -> new TagNotFoundException(ErrorCode.TAG_NOT_FOUND));
 
                 boardTagRepository.deleteById(board.getId(), tag.getId());
             }
@@ -117,7 +119,7 @@ public class BoardService {
         board.update(request.toEntity());
 
         List<String> tagList = boardTagRepository.findAllByBoardId(board.getId())
-                .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
+                .orElseThrow(() -> new BoardTagNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
                 .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
 
         return BoardUpdateResponseDto.of(board, tagList);
@@ -125,7 +127,7 @@ public class BoardService {
 
     public ResponseEntity<Void> deleteBoard(Long boardId, Long memberId) {
         Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new CustomEntityNotFoundException(ErrorCode.BOARD_NOT_FOUND));
+                .orElseThrow(() -> new BoardTagNotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
         matchBoardWriter(board, memberId);
 
