@@ -14,9 +14,8 @@ import java.util.Optional;
 @Repository
 public interface BoardTagRepository extends JpaRepository<BoardTag, BoardTagId> {
 
+    @Query("select bt from BoardTag bt join fetch bt.tag")
     Optional<List<BoardTag>> findAllByBoardId(Long boardId);
-
-    Boolean existsByBoardAndTag(Board board, Tag tag);
 
     @Modifying
     @Query(value = "delete from board_tag where board_id = :boardId and tag_id = :tagId", nativeQuery = true)
