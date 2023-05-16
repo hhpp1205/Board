@@ -30,12 +30,14 @@ public class BoardController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<BoardReadResponseDto>> readBoardList(
+    public ResponseEntity<PageInfoResponseDto> readBoardList(
+            @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "3", required = false) Integer pageSize,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        List<BoardReadResponseDto> responseDtos = boardService.readBoardList(customUserDetails.getId());
+        PageInfoResponseDto responseDto = boardService.readBoardList(customUserDetails.getId(), pageNo, pageSize);
 
-        return ResponseEntity.ok(responseDtos);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PatchMapping

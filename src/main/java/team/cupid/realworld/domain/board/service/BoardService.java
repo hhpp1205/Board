@@ -1,6 +1,10 @@
 package team.cupid.realworld.domain.board.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -43,8 +47,8 @@ public class BoardService {
                 tag = tagRepository.findByName(tagName).orElseThrow(() -> new TagNotFoundException(ErrorCode.TAG_NOT_FOUND));
             } else {
                 tag = Tag.of(tagName);
+                tagRepository.save(tag);
             }
-            tagRepository.save(tag);
             boardTagRepository.save(BoardTag.of(board, tag));
         }
 
@@ -56,9 +60,15 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardReadResponseDto> readBoardList(Long memberId) {
-        List<BoardReadResponseDto> list = boardRepository.findAllBoardReadDto(memberId)
+    public PageInfoResponseDto readBoardList(Long memberId, Integer pageNo, Integer pageSize) {
+         Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+//        List<BoardReadResponseDto> list = boardRepository.searchAllBoardReadDto(memberId)
+//                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
+        Page<BoardReadResponseDto> page = boardRepository.searchPageBoardReadDto(memberId, pageable)
                 .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
+
+        List<BoardReadResponseDto> list = page.getContent();
 
         for (BoardReadResponseDto responseDto : list) {
             responseDto.setTags(boardTagRepository.findAllByBoardId(responseDto.getBoardId())
@@ -66,7 +76,7 @@ public class BoardService {
                     .stream().map(e -> e.getTag().getName()).collect(Collectors.toList()));
         }
 
-        return list;
+        return PageInfoResponseDto.of(list, pageNo, pageSize);
     }
 
     public BoardUpdateResponseDto updateBoard(BoardUpdateRequestDto request, Long memberId) {
