@@ -60,8 +60,9 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public PageInfoResponseDto readBoardList(Long memberId, Integer pageNo, Integer pageSize) {
-         Pageable pageable = PageRequest.of(pageNo, pageSize);
+    public PageInfoResponseDto readBoardList(Long memberId, Integer pageNo) {
+        Integer pageSize = 10;
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
 
 //        List<BoardReadResponseDto> list = boardRepository.searchAllBoardReadDto(memberId)
 //                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
