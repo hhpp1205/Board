@@ -35,7 +35,7 @@ public class BoardService {
     private final TagRepository tagRepository;
     private final BoardTagRepository boardTagRepository;
 
-    public BoardSaveResponseDto saveBoard(BoardSaveRequestDto request, Long memberId) {
+    public BoardSaveResponseDto save(BoardSaveRequestDto request, Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
@@ -52,35 +52,41 @@ public class BoardService {
             boardTagRepository.save(BoardTag.of(board, tag));
         }
 
-        List<String> tagList = boardTagRepository.findAllByBoardId(board.getId())
-                .orElseThrow(() -> new BoardTagNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
-                .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
+        List<String> tagList = getTagNameList(board.getId());
 
         return BoardSaveResponseDto.of(board, tagList);
     }
 
     @Transactional(readOnly = true)
-    public PageInfoResponseDto readBoardList(Long memberId, Integer pageNo) {
+    public List<BoardReadResponseDto> searchAll(Long memberId) {
+        List<BoardReadResponseDto> list = boardRepository.searchAllBoardReadDto(memberId)
+                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
+
+        for (BoardReadResponseDto responseDto : list) {
+            responseDto.setTags(getTagNameList(responseDto.getBoardId()));
+        }
+
+        return list;
+    }
+
+    @Transactional(readOnly = true)
+    public PageInfoResponseDto searchPage(Long memberId, Integer pageNo) {
         Integer pageSize = 10;
         Pageable pageable = PageRequest.of(pageNo, pageSize);
 
-//        List<BoardReadResponseDto> list = boardRepository.searchAllBoardReadDto(memberId)
-//                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
         Page<BoardReadResponseDto> page = boardRepository.searchPageBoardReadDto(memberId, pageable)
                 .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
         List<BoardReadResponseDto> list = page.getContent();
 
         for (BoardReadResponseDto responseDto : list) {
-            responseDto.setTags(boardTagRepository.findAllByBoardId(responseDto.getBoardId())
-                    .orElseThrow(() -> new BoardTagNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
-                    .stream().map(e -> e.getTag().getName()).collect(Collectors.toList()));
+            responseDto.setTags(getTagNameList(responseDto.getBoardId()));
         }
 
         return PageInfoResponseDto.of(list, pageNo, pageSize);
     }
 
-    public BoardUpdateResponseDto updateBoard(BoardUpdateRequestDto request, Long memberId) {
+    public BoardUpdateResponseDto update(BoardUpdateRequestDto request, Long memberId) {
         Board board = boardRepository.findById(request.getId())
                 .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
@@ -136,7 +142,7 @@ public class BoardService {
         return BoardUpdateResponseDto.of(board, tagList);
     }
 
-    public ResponseEntity<Void> deleteBoard(Long boardId, Long memberId) {
+    public ResponseEntity<Void> delete(Long boardId, Long memberId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardTagNotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
@@ -147,9 +153,15 @@ public class BoardService {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    // common method
+    public List<String> getTagNameList(Long id) {
+        return boardTagRepository.findAllByBoardId(id)
+                .orElseThrow(() -> new BoardTagNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
+                .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
+    }
+
     // exception method
     public void matchBoardWriter(Board board, Long memberId) {
-
         if (board.getMember().getMemberId() != memberId) {
             throw new NoMatchBoardWriterException(ErrorCode.NO_MATCH_BOARD_WRITER);
         }

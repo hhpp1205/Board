@@ -24,17 +24,26 @@ public class BoardController {
             @RequestBody @Valid final BoardSaveRequestDto request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        BoardSaveResponseDto responseDto = boardService.saveBoard(request, customUserDetails.getId());
+        BoardSaveResponseDto responseDto = boardService.save(request, customUserDetails.getId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<PageInfoResponseDto> readBoardList(
+    @GetMapping("/search/all")
+    public ResponseEntity<List<BoardReadResponseDto>> searchBoardAll(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        List<BoardReadResponseDto> responseDto = boardService.searchAll(customUserDetails.getId());
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<PageInfoResponseDto> searchBoardPage(
             @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        PageInfoResponseDto responseDto = boardService.readBoardList(customUserDetails.getId(), pageNo);
+        PageInfoResponseDto responseDto = boardService.searchPage(customUserDetails.getId(), pageNo);
 
         return ResponseEntity.ok(responseDto);
     }
@@ -44,7 +53,7 @@ public class BoardController {
             @RequestBody @Valid final BoardUpdateRequestDto request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        BoardUpdateResponseDto responseDto = boardService.updateBoard(request, customUserDetails.getId());
+        BoardUpdateResponseDto responseDto = boardService.update(request, customUserDetails.getId());
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
@@ -54,7 +63,7 @@ public class BoardController {
             @PathVariable Long boardId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        return boardService.deleteBoard(boardId, customUserDetails.getId());
+        return boardService.delete(boardId, customUserDetails.getId());
     }
 
 }
