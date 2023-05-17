@@ -4,11 +4,9 @@ import lombok.*;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
 public class BoardReadResponseDto {
     private Long boardId;
     private String title;
@@ -28,5 +26,9 @@ public class BoardReadResponseDto {
         this.createdDate = createdDate;
         this.isGood = isGood == null ? false : isGood;
         this.goodCount = goodCount;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
     }
 }
