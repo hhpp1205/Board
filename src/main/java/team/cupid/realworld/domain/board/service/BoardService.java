@@ -95,12 +95,13 @@ public class BoardService {
                 tagUseCheckMap.put(tagName, true);
             // 새로 추가될 태그
             } else {
+                Tag tag;
                 if (!tagRepository.existsByName(tagName)) {
-                    tagRepository.save(Tag.of(tagName));
+                    tag = tagRepository.save(Tag.of(tagName));
+                }else {
+                    tag = tagRepository.findByName(tagName)
+                            .orElseThrow(() -> new TagNotFoundException(ErrorCode.TAG_NOT_FOUND));
                 }
-
-                Tag tag = tagRepository.findByName(tagName)
-                        .orElseThrow(() -> new TagNotFoundException(ErrorCode.TAG_NOT_FOUND));
 
                 boardTagRepository.save(BoardTag.of(board, tag));
             }
