@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import team.cupid.realworld.domain.follow.dto.FollowResponse;
 import team.cupid.realworld.domain.follow.dto.SimpleFollowResponse;
 import team.cupid.realworld.domain.follow.service.FollowService;
+import team.cupid.realworld.global.common.CustomPageResponse;
 import team.cupid.realworld.global.security.principal.CustomUserDetails;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -39,7 +38,7 @@ public class FollowController {
     }
 
     @GetMapping("/follow/following")
-    public ResponseEntity<List<FollowResponse>> getFollowing(
+    public ResponseEntity<CustomPageResponse<FollowResponse>> getFollowing(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             Pageable pageable
     ) {
@@ -47,7 +46,7 @@ public class FollowController {
     }
 
     @GetMapping("/follow/follower")
-    public ResponseEntity<List<FollowResponse>> getFollower(
+    public ResponseEntity<CustomPageResponse<FollowResponse>> getFollower(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
             Pageable pageable
     ) {
