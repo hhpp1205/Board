@@ -40,10 +40,10 @@ public class BoardController {
 
     @GetMapping("/search")
     public ResponseEntity<PageInfoResponseDto> searchBoardPage(
-            @RequestParam(value = "pageNo", defaultValue = "0", required = false) Integer pageNo,
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        PageInfoResponseDto responseDto = boardService.searchPage(customUserDetails.getId(), pageNo);
+        PageInfoResponseDto responseDto = boardService.searchPage(customUserDetails.getId(), pageNumber);
 
         return ResponseEntity.ok(responseDto);
     }

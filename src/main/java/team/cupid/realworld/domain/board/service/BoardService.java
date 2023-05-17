@@ -70,9 +70,9 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public PageInfoResponseDto searchPage(Long memberId, Integer pageNo) {
+    public PageInfoResponseDto searchPage(Long memberId, Integer pageNumber) {
         Integer pageSize = 10;
-        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         Page<BoardReadResponseDto> page = boardRepository.searchPageBoardReadDto(memberId, pageable)
                 .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
@@ -83,7 +83,7 @@ public class BoardService {
             responseDto.setTags(getTagNameList(responseDto.getBoardId()));
         }
 
-        return PageInfoResponseDto.of(list, pageNo, pageSize);
+        return PageInfoResponseDto.of(list, page);
     }
 
     public BoardUpdateResponseDto update(BoardUpdateRequestDto request, Long memberId) {
