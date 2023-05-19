@@ -1,12 +1,16 @@
 package team.cupid.realworld.domain.board.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import team.cupid.realworld.domain.board.dto.*;
 import team.cupid.realworld.domain.board.service.BoardService;
+import team.cupid.realworld.global.common.CustomPageResponse;
 import team.cupid.realworld.global.security.principal.CustomUserDetails;
 
 import javax.validation.Valid;
@@ -39,13 +43,12 @@ public class BoardController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<PageInfoResponseDto> searchBoardPage(
-            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    public ResponseEntity<CustomPageResponse> searchBoardPage(
+            @AuthenticationPrincipal CustomUserDetails customUserDetails,
+            @RequestParam(name = "page") Integer page
     ) {
-        PageInfoResponseDto responseDto = boardService.searchPage(customUserDetails.getId(), pageNumber);
-
-        return ResponseEntity.ok(responseDto);
+        Pageable pageable = PageRequest.of(page, 10);
+        return ResponseEntity.ok(boardService.searchPage(customUserDetails.getId(), pageable));
     }
 
     @PatchMapping
