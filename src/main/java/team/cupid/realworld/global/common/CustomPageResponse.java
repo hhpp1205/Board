@@ -36,5 +36,15 @@ public class CustomPageResponse<T> {
                 .build();
     }
 
+    public static <T> CustomPageResponse<T> of(Page<T> page, List<T> data) {
+        return CustomPageResponse.<T>builder()
+                .data(data)
+                .totalPage(page.getTotalPages())
+                .totalElement(page.getTotalElements())
+                .number(page.getNumber())
+                .build();
+    }
+
+
 
 }

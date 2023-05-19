@@ -11,5 +11,5 @@ public interface CustomBoardRepository {
 
     Optional<List<BoardReadResponseDto>> searchAllBoardReadDto(Long id);
 
-    Optional<Page<BoardReadResponseDto>> searchPageBoardReadDto(Long id, Pageable pageable);
+    Optional<Page<BoardReadResponseDto>> searchPageBoardReadDto(Pageable pageable);
 }

@@ -1,10 +1,10 @@
 package team.cupid.realworld.domain.board.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,20 @@ import team.cupid.realworld.domain.board.exception.BoardNotFoundException;
 import team.cupid.realworld.domain.board.exception.BoardTagNotFoundException;
 import team.cupid.realworld.domain.board.exception.NoMatchBoardWriterException;
 import team.cupid.realworld.domain.board.exception.TagNotFoundException;
+import team.cupid.realworld.domain.good.domain.Good;
+import team.cupid.realworld.domain.good.domain.repository.GoodRepository;
+import team.cupid.realworld.domain.good.exception.GoodNotFoundException;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
+import team.cupid.realworld.global.common.CustomPageResponse;
 import team.cupid.realworld.global.error.exception.ErrorCode;
+import team.cupid.realworld.global.policy.RedisPolicy;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static team.cupid.realworld.global.policy.RedisPolicy.*;
 
 @Service
 @Transactional
@@ -34,6 +41,7 @@ public class BoardService {
     private final MemberRepository memberRepository;
     private final TagRepository tagRepository;
     private final BoardTagRepository boardTagRepository;
+    private final GoodRepository goodRepository;
 
     public BoardSaveResponseDto save(BoardSaveRequestDto request, Long memberId) {
         Member member = memberRepository.findById(memberId)
@@ -69,22 +77,34 @@ public class BoardService {
         return list;
     }
 
-    @Transactional(readOnly = true)
-    public PageInfoResponseDto searchPage(Long memberId, Integer pageNumber) {
-        Integer pageSize = 10;
-        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        Page<BoardReadResponseDto> page = boardRepository.searchPageBoardReadDto(memberId, pageable)
-                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
+
+    @Transactional(readOnly = true)
+    public CustomPageResponse<BoardReadResponseDto> searchPage(Long memberId, Pageable pageable) {
+        Page<BoardReadResponseDto> page = getBoardReadResponseDtosBy(pageable);
 
         List<BoardReadResponseDto> list = page.getContent();
 
         for (BoardReadResponseDto responseDto : list) {
             responseDto.setTags(getTagNameList(responseDto.getBoardId()));
+
+            if (goodRepository.existsByBoardIdAndMemberMemberId(responseDto.getBoardId(), memberId)) {
+                Good good = goodRepository.findByBoardIdAndMemberMemberId(responseDto.getBoardId(), memberId)
+                        .orElseThrow(() -> new GoodNotFoundException(ErrorCode.GOOD_NOT_FOUND));
+                if (good.isGood()) {
+                    responseDto.isGood();
+                } else {
+                    responseDto.isNotGood();
+                }
+            } else {
+                responseDto.isNotGood();
+            }
+
         }
 
-        return PageInfoResponseDto.of(list, page);
+        return CustomPageResponse.of(page, list);
     }
+
 
     public BoardUpdateResponseDto update(BoardUpdateRequestDto request, Long memberId) {
         Board board = boardRepository.findById(request.getId())
@@ -154,15 +174,21 @@ public class BoardService {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @Cacheable(key = "#pageable.getPageNumber()", value = BOARD_KEY)
+    public Page<BoardReadResponseDto> getBoardReadResponseDtosBy(Pageable pageable) {
+        return boardRepository.searchPageBoardReadDto(pageable)
+                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
+    }
+
     // common method
-    public List<String> getTagNameList(Long id) {
+    private List<String> getTagNameList(Long id) {
         return boardTagRepository.findAllByBoardId(id)
                 .orElseThrow(() -> new BoardTagNotFoundException(ErrorCode.BOARD_TAG_NOT_FOUND))
                 .stream().map(e -> e.getTag().getName()).collect(Collectors.toList());
     }
 
     // exception method
-    public void matchBoardWriter(Board board, Long memberId) {
+    private void matchBoardWriter(Board board, Long memberId) {
         if (board.getMember().getMemberId() != memberId) {
             throw new NoMatchBoardWriterException(ErrorCode.NO_MATCH_BOARD_WRITER);
         }

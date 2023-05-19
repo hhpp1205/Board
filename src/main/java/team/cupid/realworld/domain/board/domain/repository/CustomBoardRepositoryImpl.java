@@ -52,7 +52,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
     }
 
     @Override
-    public Optional<Page<BoardReadResponseDto>> searchPageBoardReadDto(Long id, Pageable pageable) {
+    public Optional<Page<BoardReadResponseDto>> searchPageBoardReadDto(Pageable pageable) {
         QBoard b = board;
         QMember m = member;
         QGood g = good;
@@ -64,11 +64,9 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
                                 , b.content
                                 , m.nickname.as("writer")
                                 , b.createTime.as("createdDate")
-                                , g.isGood
                                 , b.goodCount))
                         .from(b)
                         .join(m).on(b.member.memberId.eq(m.memberId))
-                        .leftJoin(g).on(b.id.eq(g.board.id).and(g.member.memberId.eq(id)))
                         .where(b.boardStatus.eq(BoardStatus.SAVED))
                         .orderBy(b.id.desc())
                         .offset(pageable.getOffset())
