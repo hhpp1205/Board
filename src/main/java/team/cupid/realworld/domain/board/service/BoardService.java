@@ -1,9 +1,7 @@
 package team.cupid.realworld.domain.board.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +23,10 @@ import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
 import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
 import team.cupid.realworld.global.common.CustomPageResponse;
 import team.cupid.realworld.global.error.exception.ErrorCode;
-import team.cupid.realworld.global.policy.RedisPolicy;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static team.cupid.realworld.global.policy.RedisPolicy.*;
 
 @Service
 @Transactional
@@ -42,6 +38,7 @@ public class BoardService {
     private final TagRepository tagRepository;
     private final BoardTagRepository boardTagRepository;
     private final GoodRepository goodRepository;
+
 
     public BoardSaveResponseDto save(BoardSaveRequestDto request, Long memberId) {
         Member member = memberRepository.findById(memberId)
@@ -78,10 +75,10 @@ public class BoardService {
     }
 
 
-
     @Transactional(readOnly = true)
     public CustomPageResponse<BoardReadResponseDto> searchPage(Long memberId, Pageable pageable) {
-        Page<BoardReadResponseDto> page = getBoardReadResponseDtosBy(pageable);
+        Page<BoardReadResponseDto> page = boardRepository.searchPageBoardReadDto(pageable)
+                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
 
         List<BoardReadResponseDto> list = page.getContent();
 
@@ -172,12 +169,6 @@ public class BoardService {
         boardRepository.delete(board);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
-
-    @Cacheable(key = "#pageable.getPageNumber()", value = BOARD_KEY)
-    public Page<BoardReadResponseDto> getBoardReadResponseDtosBy(Pageable pageable) {
-        return boardRepository.searchPageBoardReadDto(pageable)
-                .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
     }
 
     // common method

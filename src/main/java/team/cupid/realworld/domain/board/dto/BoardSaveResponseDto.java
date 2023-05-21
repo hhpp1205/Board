@@ -6,13 +6,13 @@ import lombok.Getter;
 import team.cupid.realworld.domain.board.domain.Board;
 import team.cupid.realworld.domain.board.domain.BoardStatus;
 
-import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Builder
 @AllArgsConstructor
-public class BoardSaveResponseDto {
+public class BoardSaveResponseDto implements Serializable {
     private Long boardId;
     private String title;
     private String content;

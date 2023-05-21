@@ -3,6 +3,7 @@ package team.cupid.realworld.domain.member.dto;
 import lombok.*;
 import team.cupid.realworld.domain.member.domain.Member;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class MemberResponse {
+public class MemberResponse implements Serializable {
 
     private String email;
     private String nickname;

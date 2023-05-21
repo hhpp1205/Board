@@ -1,5 +1,8 @@
 package team.cupid.realworld.global.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -9,8 +12,7 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.*;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -56,13 +58,14 @@ public class RedisConfig {
                 .disableCachingNullValues()
                 .entryTtl(Duration.ofMinutes(30))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
-                        new StringRedisSerializer()));
+                        new GenericJackson2JsonRedisSerializer()));
 
         Map<String, RedisCacheConfiguration> config = new HashMap<>();
 
         config.put(MEMBER_KEY, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(MEMBER_TTL)));
         config.put(MEMBER_PROFILE_KEY, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(MEMBER_PROFILE_TTL)));
         config.put(AUTH_KEY, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(AUTH_TTL)));
+        config.put(BOARD_KEY, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(BOARD_TTL)));
 
         return RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(redisConnectionFactory())

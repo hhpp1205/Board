@@ -33,13 +33,17 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findByNickname(nickname));
     }
 
+    @GetMapping("/members")
+    public ResponseEntity<MemberResponse> findByNickname(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.ok(memberService.findById(customUserDetails.getId()));
+    }
+
     @PutMapping("/members")
-    public ResponseEntity<SimpleMemberResponse> update(
+    public ResponseEntity<MemberResponse> update(
             @Validated @RequestBody MemberUpdateRequest request,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        Long memberId = memberService.update(customUserDetails.getId(), request.toEntity());
-        return ResponseEntity.ok().body(new SimpleMemberResponse(memberId));
+        return ResponseEntity.ok().body(memberService.update(customUserDetails.getId(), request.toEntity()));
     }
 
     @DeleteMapping("/members")

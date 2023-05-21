@@ -1,6 +1,7 @@
 package team.cupid.realworld.domain.board.dto;
 
 import lombok.*;
+import team.cupid.realworld.domain.board.domain.tag.BoardTag;
 
 
 import java.io.Serializable;
@@ -39,7 +40,8 @@ public class BoardReadResponseDto implements Serializable {
         this.goodCount = goodCount;
     }
 
-    public void setTags(List<String> tags) {
+
+  public void setTags(List<String> tags) {
         this.tags = tags;
     }
 

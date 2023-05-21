@@ -5,11 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 @Getter
 @NoArgsConstructor
-public class CustomPageResponse<T> {
+public class CustomPageResponse<T> implements Serializable {
 
     private List<T> data = new ArrayList<>();
 
