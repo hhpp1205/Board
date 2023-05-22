@@ -63,6 +63,7 @@ public class RedisConfig {
         config.put(MEMBER_KEY, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(MEMBER_TTL)));
         config.put(MEMBER_PROFILE_KEY, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(MEMBER_PROFILE_TTL)));
         config.put(AUTH_KEY, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(AUTH_TTL)));
+        config.put(BOARD_KEY, RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(BOARD_TTL)));
 
         return RedisCacheManager.RedisCacheManagerBuilder
                 .fromConnectionFactory(redisConnectionFactory())
