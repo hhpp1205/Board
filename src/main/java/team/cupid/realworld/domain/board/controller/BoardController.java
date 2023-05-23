@@ -45,9 +45,9 @@ public class BoardController {
     @GetMapping("/search")
     public ResponseEntity<CustomPageResponse> searchBoardPage(
             @AuthenticationPrincipal CustomUserDetails customUserDetails,
-            @RequestParam(name = "page") Integer page
+            @RequestParam(name = "pageNumber") Integer pageNumber
     ) {
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(pageNumber, 10);
         return ResponseEntity.ok(boardService.searchPage(customUserDetails.getId(), pageable));
     }
 

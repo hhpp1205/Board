@@ -55,7 +55,6 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
     public Optional<Page<BoardReadResponseDto>> searchPageBoardReadDto(Pageable pageable) {
         QBoard b = board;
         QMember m = member;
-        QGood g = good;
 
         List<BoardReadResponseDto> list =
                 queryFactory.select(Projections.constructor(BoardReadResponseDto.class

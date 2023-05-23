@@ -13,6 +13,7 @@ import team.cupid.realworld.domain.good.exception.GoodNotFoundException;
 import team.cupid.realworld.domain.good.exception.IsGoodException;
 import team.cupid.realworld.domain.member.domain.Member;
 import team.cupid.realworld.domain.member.domain.repository.MemberRepository;
+import team.cupid.realworld.domain.member.exception.MemberNotFoundException;
 import team.cupid.realworld.global.error.exception.ErrorCode;
 
 @Service
@@ -26,7 +27,7 @@ public class GoodService{
 
     public CommonGoodResponseDto like(Long boardId, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member가 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
@@ -52,7 +53,7 @@ public class GoodService{
 
     public CommonGoodResponseDto cancel(Long boardId, Long memberId) {
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member가 존재하지 않습니다."));
+                .orElseThrow(() -> new MemberNotFoundException(ErrorCode.MEMBER_NOT_FOUND));
 
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException(ErrorCode.BOARD_NOT_FOUND));
